@@ -97,6 +97,3 @@ The application is pre-configured for Vercel with SPA routing rewrite rules in `
 - **Admin Panel URL:** `/admin`
 - Logging in requires an authenticated account that has `role = 'admin'` configured in the `profiles_la2024` database table.
 
----
-
-Built with ❤️ for transformational leadership.
