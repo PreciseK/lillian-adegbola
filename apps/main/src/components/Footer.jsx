@@ -7,7 +7,7 @@ import PrivacyPolicyModal from './PrivacyPolicyModal';
 import TermsOfServiceModal from './TermsOfServiceModal';
 import logoIcon from '../assets/logo.png';
 
-const { FiMail, FiPhone, FiLinkedin, FiInstagram, FiFacebook, FiArrowUp, FiSettings } = FiIcons;
+const { FiMail, FiPhone, FiLinkedin, FiInstagram, FiFacebook, FiArrowUp } = FiIcons;
 
 const Footer = () => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
@@ -300,15 +300,6 @@ const Footer = () => {
                   >
                     Terms of Service
                   </button>
-
-                  {/* Admin Link */}
-                  <Link
-                    to="/admin"
-                    className="text-gray-400 hover:text-gold-400 transition-colors font-montserrat text-sm flex items-center space-x-1"
-                  >
-                    <SafeIcon icon={FiSettings} className="text-xs" />
-                    <span>Admin</span>
-                  </Link>
 
                   {/* Scroll to Top Button */}
                   <motion.button
