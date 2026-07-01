@@ -4,6 +4,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
 import ImageUploader from './ImageUploader';
+import RichTextEditor from '../../common/RichTextEditor';
 
 const {
   FiEdit3,
@@ -521,13 +522,11 @@ const BlogManager = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Content *
                 </label>
-                <textarea
-                  name="content"
+                <RichTextEditor
                   value={formData.content}
-                  onChange={handleChange}
-                  required
-                  rows={10}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent"
+                  onChange={(val) => setFormData(prev => ({ ...prev, content: val }))}
+                  placeholder="Write your blog post content here..."
+                  height={350}
                 />
               </div>
 

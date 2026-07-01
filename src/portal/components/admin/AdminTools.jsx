@@ -3,6 +3,7 @@ import supabase from '../../../lib/supabase';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import RichTextEditor from '../../../common/RichTextEditor';
 
 const {
   FiTool, FiUsers, FiMail, FiFileText, FiDownload, FiUpload, FiRefreshCw,
@@ -14,6 +15,9 @@ const {
 const AdminTools = () => {
   const [activeCategory, setActiveCategory] = useState('user-management');
   const [searchTerm, setSearchTerm] = useState('');
+  const [composeModal, setComposeModal] = useState(false);
+  const [emailDraft, setEmailDraft] = useState({ subject: '', body: '' });
+  const [sendingBulk, setSendingBulk] = useState(false);
 
   const toolCategories = [
     { id: 'user-management', name: 'User Management', icon: FiUsers },
@@ -328,6 +332,13 @@ const AdminTools = () => {
   const [runningTools, setRunningTools] = useState({});
 
   const handleToolAction = async (tool) => {
+    // Bulk Email Sender – open compose modal first
+    if (tool.id === 17) {
+      setEmailDraft({ subject: '', body: '' });
+      setComposeModal(true);
+      return;
+    }
+
     const config = getToolConfig(tool.id);
 
     if (!config) {
@@ -380,6 +391,31 @@ const AdminTools = () => {
     }
   };
 
+  const handleSendBulkEmail = async () => {
+    if (!emailDraft.subject.trim()) { alert('Please enter an email subject.'); return; }
+    if (!emailDraft.body.trim() || emailDraft.body === '<p><br></p>') { alert('Please write the email message.'); return; }
+    setSendingBulk(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-communication-tools', {
+        body: {
+          action: 'bulk-email',
+          payload: {
+            subject: emailDraft.subject,
+            html: `<div style="font-family:sans-serif;max-width:600px;margin:auto;padding:32px;">${emailDraft.body}</div>`
+          }
+        }
+      });
+      if (error) throw error;
+      alert(`Bulk Email Sent: ${data.message}`);
+      setComposeModal(false);
+      setEmailDraft({ subject: '', body: '' });
+    } catch (err) {
+      alert(`Failed to send: ${err.message}`);
+    } finally {
+      setSendingBulk(false);
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'active': return 'text-emerald-600 bg-emerald-100';
@@ -399,6 +435,77 @@ const AdminTools = () => {
 
   return (
     <div className="min-h-screen bg-luxury-pearl">
+
+      {/* Bulk Email Compose Modal */}
+      {composeModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl"
+          >
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <SafeIcon icon={FiMail} className="text-blue-600 text-lg" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-playfair font-bold text-navy-800">Compose Bulk Email</h2>
+                  <p className="text-sm text-gray-500 font-montserrat">Sends to all users with email notifications enabled</p>
+                </div>
+              </div>
+              <button onClick={() => setComposeModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Subject *</label>
+                <input
+                  type="text"
+                  value={emailDraft.subject}
+                  onChange={e => setEmailDraft(prev => ({ ...prev, subject: e.target.value }))}
+                  placeholder="e.g. Important Update from Lillian Adegbola"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Message *</label>
+                <RichTextEditor
+                  value={emailDraft.body}
+                  onChange={val => setEmailDraft(prev => ({ ...prev, body: val }))}
+                  placeholder="Write your email message here..."
+                  height={250}
+                />
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-700 font-montserrat">
+                ⚠️ This will send to <strong>all platform users</strong> who have email notifications enabled.
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setComposeModal(false)}
+                className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-600 font-montserrat font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendBulkEmail}
+                disabled={sendingBulk}
+                className="px-5 py-2.5 bg-gold-gradient text-navy-800 rounded-lg font-montserrat font-semibold hover:shadow-lg transition-all disabled:opacity-60 flex items-center space-x-2"
+              >
+                {sendingBulk ? (
+                  <><SafeIcon icon={FiRefreshCw} className="animate-spin text-sm" /><span>Sending...</span></>
+                ) : (
+                  <><SafeIcon icon={FiMail} className="text-sm" /><span>Send to All Users</span></>
+                )}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
