@@ -35,12 +35,11 @@ const {data,error}=await supabase
 .order('created_at',{ascending: false});
 
 if (error) throw error;
-setPosts(data && data.length > 0 ? data : demoPosts);
+setPosts(data || []);
 setLoading(false);
 } catch (error) {
 console.error('Error fetching posts:',error);
-// Fallback to demo data if Supabase fails 
-setPosts(demoPosts);
+setPosts([]);
 setLoading(false);
 }
 };

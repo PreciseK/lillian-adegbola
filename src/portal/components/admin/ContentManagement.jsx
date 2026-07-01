@@ -60,7 +60,7 @@ const ContentManagement = () => {
         lessons: course.lessons_count || 0,
         duration: course.duration,
         createdAt: course.created_at,
-        thumbnail: course.image_url || 'https://via.placeholder.com/150'
+        thumbnail: course.image_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cccccc'><rect width='24' height='24'/></svg>"
       }));
 
       // Process resources

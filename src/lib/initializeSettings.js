@@ -137,6 +137,7 @@ const defaultSettings = {
   stat_success_rate: '95%',
   stat_years_experience: '15+',
   stat_organizations_served: '50+',
+  download_leadership_guide_url: '',
 
   // SEO Performance
   lazy_loading: true,

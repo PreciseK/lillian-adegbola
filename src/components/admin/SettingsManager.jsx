@@ -122,6 +122,7 @@ const SettingsManager = () => {
     stat_success_rate: '95%',
     stat_years_experience: '15+',
     stat_organizations_served: '50+',
+    download_leadership_guide_url: '',
   });
 
   useEffect(() => {
@@ -485,7 +486,34 @@ const SettingsManager = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
                       placeholder="50+"
                     />
-                  </div>
+                </div>
+              </div>
+            </div>
+
+              {/* Downloadable Assets */}
+              <div className="border-t border-gray-200 pt-6 mt-6">
+                <h4 className="text-base font-playfair font-bold text-navy-800 mb-2">
+                  Downloadable Assets
+                </h4>
+                <p className="text-xs text-gray-500 mb-4 font-montserrat">
+                  Configure links for downloadable resources on your public website.
+                </p>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Leadership Guide PDF Link
+                  </label>
+                  <input
+                    type="url"
+                    name="download_leadership_guide_url"
+                    value={formData.download_leadership_guide_url}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                    placeholder="https://example.com/leadership-guide.pdf"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 font-montserrat">
+                    This link is used when visitors click the "Download Leadership Guide" button on the homepage.
+                  </p>
                 </div>
               </div>
             </div>

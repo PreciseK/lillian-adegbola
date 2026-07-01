@@ -58,7 +58,7 @@ const SupportCenter = () => {
         customer: {
           name: `${ticket.customer?.first_name || ''} ${ticket.customer?.last_name || ''}`.trim() || 'Guest',
           email: ticket.customer?.email || 'No Email',
-          avatar: ticket.customer?.avatar_url || 'https://via.placeholder.com/40',
+          avatar: ticket.customer?.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cccccc'><circle cx='12' cy='8' r='4'/><path d='M12 14c-6.1 0-10 4-10 10h20c0-6-3.9-10-10-10z'/></svg>",
           membershipTier: ticket.customer?.membership_tier || 'basic'
         },
         priority: ticket.priority,

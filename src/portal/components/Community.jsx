@@ -54,7 +54,7 @@ const Community = () => {
         title: post.title,
         content: post.content,
         author: post.author ? `${post.author.first_name || ''} ${post.author.last_name || ''}`.trim() : 'Unknown',
-        avatar: post.author?.avatar_url || 'https://via.placeholder.com/100',
+        avatar: post.author?.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cccccc'><circle cx='12' cy='8' r='4'/><path d='M12 14c-6.1 0-10 4-10 10h20c0-6-3.9-10-10-10z'/></svg>",
         category: post.category,
         timestamp: new Date(post.created_at).toLocaleDateString(),
         likes: post.likes_count || 0,
@@ -74,7 +74,7 @@ const Community = () => {
 
       const formattedMembers = (profilesData || []).map(profile => ({
         name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Community Member',
-        avatar: profile.avatar_url || 'https://via.placeholder.com/100',
+        avatar: profile.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cccccc'><circle cx='12' cy='8' r='4'/><path d='M12 14c-6.1 0-10 4-10 10h20c0-6-3.9-10-10-10z'/></svg>",
         role: profile.membership_tier || 'Member', // Using tier as role
         posts: 0, // Placeholder as we don't have post count in profile yet
         joined: new Date(profile.created_at).toLocaleDateString(),

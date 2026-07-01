@@ -172,12 +172,11 @@ Every powerful conversation has structure and intention.
         .limit(6); // Limit to 6 posts for homepage
 
       if (error) throw error;
-      setPosts(data && data.length > 0 ? data : blogPosts);
+      setPosts(data || []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching posts:', error);
-      // Fallback to demo data if Supabase fails
-      setPosts(blogPosts);
+      setPosts([]);
       setLoading(false);
     }
   };

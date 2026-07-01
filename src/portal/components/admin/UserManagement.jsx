@@ -61,7 +61,7 @@ const UserManagement = () => {
         lastActive: user.updated_at,
         totalSpent: 0, // Needs orders table
         coursesCompleted: 0, // Needs enrollments table
-        avatar: user.avatar_url || 'https://via.placeholder.com/100'
+        avatar: user.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cccccc'><circle cx='12' cy='8' r='4'/><path d='M12 14c-6.1 0-10 4-10 10h20c0-6-3.9-10-10-10z'/></svg>"
       }));
 
       setUsers(transformedUsers);

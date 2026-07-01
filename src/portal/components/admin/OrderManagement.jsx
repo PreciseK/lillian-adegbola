@@ -54,7 +54,7 @@ const OrderManagement = () => {
         customer: {
           name: `${order.customer?.first_name || ''} ${order.customer?.last_name || ''}`.trim() || 'Guest',
           email: order.customer?.email || 'No Email',
-          avatar: order.customer?.avatar_url || 'https://via.placeholder.com/40'
+          avatar: order.customer?.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cccccc'><circle cx='12' cy='8' r='4'/><path d='M12 14c-6.1 0-10 4-10 10h20c0-6-3.9-10-10-10z'/></svg>"
         },
         items: order.items.map(item => ({
           name: item.name,

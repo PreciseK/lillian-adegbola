@@ -4,6 +4,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import BookingModal from './BookingModal';
 import { useContact } from '../hooks/useContact';
+import { useSettings } from '../hooks/useSettings';
 
 const { FiMail, FiPhone, FiMapPin, FiSend, FiCalendar, FiLinkedin, FiInstagram, FiFacebook } = FiIcons;
 
@@ -17,6 +18,7 @@ const Contact = () => {
   });
   const [showBookingModal, setShowBookingModal] = useState(false);
   const { submitContactForm, loading, error } = useContact();
+  const { settings } = useSettings(['download_leadership_guide_url']);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -307,6 +309,13 @@ const Contact = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    if (settings?.download_leadership_guide_url) {
+                      window.open(settings.download_leadership_guide_url, '_blank');
+                    } else {
+                      alert('The leadership guide is currently being updated. Please check back soon!');
+                    }
+                  }}
                   className="w-full border-2 border-navy-800 text-navy-800 py-3 sm:py-4 rounded-lg sm:rounded-xl font-montserrat font-bold hover:bg-navy-800 hover:text-white transition-all duration-300 text-sm sm:text-base"
                 >
                   Download Leadership Guide

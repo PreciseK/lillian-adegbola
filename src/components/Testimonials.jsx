@@ -99,13 +99,11 @@ const Testimonials = () => {
 
       if (error) throw error;
 
-      // Use database testimonials if available, otherwise fall back to demo data
-      setTestimonials(data && data.length > 0 ? data : demoTestimonials);
+      setTestimonials(data || []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching testimonials:', error);
-      // Fallback to demo data if database fails
-      setTestimonials(demoTestimonials);
+      setTestimonials([]);
       setLoading(false);
     }
   };
