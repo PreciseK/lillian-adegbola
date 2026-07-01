@@ -18,6 +18,107 @@ const AdminTools = () => {
   const [composeModal, setComposeModal] = useState(false);
   const [emailDraft, setEmailDraft] = useState({ subject: '', body: '' });
   const [sendingBulk, setSendingBulk] = useState(false);
+  const [toolInputModal, setToolInputModal] = useState({ open: false, tool: null, inputs: {} });
+  const [submittingTool, setSubmittingTool] = useState(false);
+
+  // Tools that need a user-input dialog before running
+  const TOOL_DIALOG_CONFIGS = {
+    1: { // Bulk User Import
+      description: 'Paste CSV rows (one per line) with format: first_name, last_name, email, tier',
+      fields: [
+        { name: 'csvData', label: 'CSV Data', type: 'textarea', rows: 8, placeholder: 'Jane,Doe,jane@example.com,basic\nJohn,Smith,john@example.com,premium', required: true }
+      ],
+      fn: 'admin-user-tools', action: 'bulk-import',
+      buildPayload: (inputs) => ({ csvData: inputs.csvData, count: inputs.csvData.split('\n').filter(Boolean).length })
+    },
+    3: { // Membership Migrator
+      description: 'Update a user\'s membership tier by their email address.',
+      fields: [
+        { name: 'userEmail', label: 'User Email', type: 'email', placeholder: 'user@example.com', required: true },
+        { name: 'newTier', label: 'New Membership Tier', type: 'select', options: ['basic', 'premium', 'vip', 'enterprise'], required: true }
+      ],
+      fn: 'admin-user-tools', action: 'migrate-tier',
+      buildPayload: (inputs) => ({ userEmail: inputs.userEmail, newTier: inputs.newTier })
+    },
+    4: { // Account Merger
+      description: 'Merge a duplicate account into the primary account. The duplicate will be deleted.',
+      fields: [
+        { name: 'primaryEmail', label: 'Primary Account Email (keep)', type: 'email', placeholder: 'primary@example.com', required: true },
+        { name: 'duplicateEmail', label: 'Duplicate Account Email (remove)', type: 'email', placeholder: 'duplicate@example.com', required: true }
+      ],
+      fn: 'admin-user-tools', action: 'merge-accounts',
+      buildPayload: (inputs) => ({ primaryEmail: inputs.primaryEmail, duplicateEmail: inputs.duplicateEmail })
+    },
+    5: { // Content Duplicator
+      description: 'Duplicate an existing course, product, or blog post.',
+      fields: [
+        { name: 'contentType', label: 'Content Type', type: 'select', options: ['blog post', 'course', 'product'], required: true },
+        { name: 'itemTitle', label: 'Item Title (to duplicate)', type: 'text', placeholder: 'e.g. Leadership Masterclass', required: true }
+      ],
+      fn: 'admin-content-tools', action: 'content-duplicator',
+      buildPayload: (inputs) => ({ contentType: inputs.contentType, itemTitle: inputs.itemTitle })
+    },
+    6: { // Bulk Content Editor
+      description: 'Update a field across multiple content items at once.',
+      fields: [
+        { name: 'contentType', label: 'Content Type', type: 'select', options: ['blog posts', 'courses', 'products'], required: true },
+        { name: 'field', label: 'Field to Update', type: 'text', placeholder: 'e.g. category, is_published', required: true },
+        { name: 'newValue', label: 'New Value', type: 'text', placeholder: 'e.g. leadership, true', required: true }
+      ],
+      fn: 'admin-content-tools', action: 'bulk-edit',
+      buildPayload: (inputs) => ({ contentType: inputs.contentType, field: inputs.field, newValue: inputs.newValue })
+    },
+    8: { // Content Archiver
+      description: 'Archive old or unpublished content to keep your platform tidy.',
+      fields: [
+        { name: 'contentType', label: 'Content Type to Archive', type: 'select', options: ['unpublished blog posts', 'draft courses', 'out-of-stock products'], required: true },
+        { name: 'olderThanDays', label: 'Older than (days)', type: 'number', placeholder: '30', required: false }
+      ],
+      fn: 'admin-content-tools', action: 'archive-content',
+      buildPayload: (inputs) => ({ contentType: inputs.contentType, olderThanDays: inputs.olderThanDays || 30 })
+    },
+    18: { // Notification Manager
+      description: 'Send an in-app push notification to all or specific users.',
+      fields: [
+        { name: 'title', label: 'Notification Title', type: 'text', placeholder: 'New Course Available!', required: true },
+        { name: 'message', label: 'Message', type: 'textarea', rows: 3, placeholder: 'A new course has just been added to your dashboard.', required: true },
+        { name: 'target', label: 'Target', type: 'select', options: ['all users', 'premium users', 'basic users'], required: true }
+      ],
+      fn: 'admin-communication-tools', action: 'notification-manager',
+      buildPayload: (inputs) => ({ title: inputs.title, message: inputs.message, target: inputs.target })
+    },
+    19: { // Template Editor
+      description: 'Edit a platform email template.',
+      fields: [
+        { name: 'templateType', label: 'Template', type: 'select', options: ['welcome email', 'weekly digest', 'course reminder', 'password reset'], required: true },
+        { name: 'subject', label: 'Email Subject', type: 'text', placeholder: 'Welcome to the Lillian Adegbola Community!', required: true },
+        { name: 'body', label: 'Email Body (HTML allowed)', type: 'textarea', rows: 8, placeholder: '<h2>Welcome!</h2><p>We are so glad you joined us...</p>', required: true }
+      ],
+      fn: 'admin-communication-tools', action: 'template-editor',
+      buildPayload: (inputs) => ({ templateType: inputs.templateType, subject: inputs.subject, body: inputs.body })
+    },
+    20: { // Message Scheduler
+      description: 'Schedule an email or announcement to send at a specific date and time.',
+      fields: [
+        { name: 'subject', label: 'Message Subject', type: 'text', placeholder: 'Upcoming Webinar Reminder', required: true },
+        { name: 'message', label: 'Message Body', type: 'textarea', rows: 5, placeholder: 'Don\'t forget to join us tomorrow at 10am...', required: true },
+        { name: 'scheduledAt', label: 'Schedule Date & Time', type: 'datetime-local', required: true },
+        { name: 'target', label: 'Send To', type: 'select', options: ['all users', 'newsletter subscribers', 'premium users'], required: true }
+      ],
+      fn: 'admin-communication-tools', action: 'message-scheduler',
+      buildPayload: (inputs) => ({ subject: inputs.subject, message: inputs.message, scheduledAt: inputs.scheduledAt, target: inputs.target })
+    },
+    24: { // Backup Scheduler
+      description: 'Configure the automatic database backup schedule.',
+      fields: [
+        { name: 'frequency', label: 'Backup Frequency', type: 'select', options: ['daily', 'weekly', 'monthly'], required: true },
+        { name: 'time', label: 'Preferred Time (24h)', type: 'time', required: true },
+        { name: 'retainDays', label: 'Retain backups for (days)', type: 'number', placeholder: '30', required: false }
+      ],
+      fn: 'admin-maintenance-tools', action: 'backup-scheduler',
+      buildPayload: (inputs) => ({ frequency: inputs.frequency, time: inputs.time, retainDays: inputs.retainDays || 30 })
+    }
+  };
 
   const toolCategories = [
     { id: 'user-management', name: 'User Management', icon: FiUsers },
@@ -339,6 +440,11 @@ const AdminTools = () => {
       return;
     }
 
+    // Tools that need an input dialog
+    if (TOOL_DIALOG_CONFIGS[tool.id]) {
+      setToolInputModal({ open: true, tool, inputs: {} });
+      return;
+    }
     const config = getToolConfig(tool.id);
 
     if (!config) {
@@ -388,6 +494,47 @@ const AdminTools = () => {
         delete newState[tool.id];
         return newState;
       });
+    }
+  };
+
+  const handleToolDialogSubmit = async () => {
+    const { tool, inputs } = toolInputModal;
+    const config = TOOL_DIALOG_CONFIGS[tool.id];
+    if (!config) return;
+
+    // Validate required fields
+    for (const field of config.fields) {
+      if (field.required && !inputs[field.name]?.toString().trim()) {
+        alert(`Please fill in: ${field.label}`);
+        return;
+      }
+    }
+
+    setSubmittingTool(true);
+    try {
+      const payload = config.buildPayload(inputs);
+      const { data, error } = await supabase.functions.invoke(config.fn, {
+        body: { action: config.action, payload }
+      });
+      if (error) throw error;
+      alert(`${tool.name} Success: ${data.message}`);
+      if (data.data?.url) {
+        const link = document.createElement('a');
+        link.href = data.data.url;
+        if (data.data.url.startsWith('data:text/csv')) {
+          link.setAttribute('download', `${tool.name.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}.csv`);
+        } else {
+          link.setAttribute('target', '_blank');
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      setToolInputModal({ open: false, tool: null, inputs: {} });
+    } catch (err) {
+      alert(`${tool.name} Failed: ${err.message}`);
+    } finally {
+      setSubmittingTool(false);
     }
   };
 
@@ -708,6 +855,83 @@ const AdminTools = () => {
           </div>
         </div>
       </div>
+      {/* Tool Input Dialog Modal */}
+      {toolInputModal.open && toolInputModal.tool && TOOL_DIALOG_CONFIGS[toolInputModal.tool.id] && (() => {
+        const cfg = TOOL_DIALOG_CONFIGS[toolInputModal.tool.id];
+        return (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg"
+            >
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <div>
+                  <h2 className="text-xl font-playfair font-bold text-navy-800">{toolInputModal.tool.name}</h2>
+                  <p className="text-sm text-gray-500 font-montserrat mt-1">{cfg.description}</p>
+                </div>
+                <button onClick={() => setToolInputModal({ open: false, tool: null, inputs: {} })} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                {cfg.fields.map(field => (
+                  <div key={field.name}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {field.label}{field.required && ' *'}
+                    </label>
+                    {field.type === 'textarea' ? (
+                      <textarea
+                        value={toolInputModal.inputs[field.name] || ''}
+                        onChange={e => setToolInputModal(prev => ({ ...prev, inputs: { ...prev.inputs, [field.name]: e.target.value } }))}
+                        placeholder={field.placeholder}
+                        rows={field.rows || 4}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm resize-none"
+                      />
+                    ) : field.type === 'select' ? (
+                      <select
+                        value={toolInputModal.inputs[field.name] || ''}
+                        onChange={e => setToolInputModal(prev => ({ ...prev, inputs: { ...prev.inputs, [field.name]: e.target.value } }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      >
+                        <option value="">Select...</option>
+                        {field.options.map(opt => <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>)}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.type}
+                        value={toolInputModal.inputs[field.name] || ''}
+                        onChange={e => setToolInputModal(prev => ({ ...prev, inputs: { ...prev.inputs, [field.name]: e.target.value } }))}
+                        placeholder={field.placeholder}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+                <button
+                  onClick={() => setToolInputModal({ open: false, tool: null, inputs: {} })}
+                  className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-600 font-montserrat font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleToolDialogSubmit}
+                  disabled={submittingTool}
+                  className="px-5 py-2.5 bg-gold-gradient text-navy-800 rounded-lg font-montserrat font-semibold hover:shadow-lg transition-all disabled:opacity-60 flex items-center space-x-2"
+                >
+                  {submittingTool ? (
+                    <><SafeIcon icon={FiRefreshCw} className="animate-spin text-sm" /><span>Running...</span></>
+                  ) : (
+                    <><SafeIcon icon={FiPlay} className="text-sm" /><span>Run Tool</span></>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
