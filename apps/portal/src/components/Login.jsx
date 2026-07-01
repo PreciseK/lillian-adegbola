@@ -80,17 +80,22 @@ const Login = ({ onLogin }) => {
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="flex items-center justify-center lg:justify-start space-x-4 mb-6"
                 >
-                  <div className="w-20 h-20 bg-gold-gradient rounded-full flex items-center justify-center">
-                    <span className="text-navy-900 font-bold text-3xl font-playfair">LA</span>
-                  </div>
-                  <div>
-                    <h1 className="text-4xl font-dancing font-bold text-white">
-                      Lillian Adegbola
-                    </h1>
-                    <p className="text-lg font-montserrat font-bold text-gold-200">
-                      The Queen of Clarity & Purpose
-                    </p>
-                  </div>
+                  <a
+                    href="https://portal.lillianadegbola.com"
+                    className="flex items-center space-x-4 hover:opacity-90 transition-opacity"
+                  >
+                    <div className="w-20 h-20 bg-gold-gradient rounded-full flex items-center justify-center">
+                      <span className="text-navy-900 font-bold text-3xl font-playfair">LA</span>
+                    </div>
+                    <div>
+                      <h1 className="text-4xl font-dancing font-bold text-white">
+                        Lillian Adegbola
+                      </h1>
+                      <p className="text-lg font-montserrat font-bold text-gold-200">
+                        The Queen of Clarity & Purpose
+                      </p>
+                    </div>
+                  </a>
                 </motion.div>
 
                 <motion.div
