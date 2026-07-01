@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import supabase from '../../../lib/supabase';
 
-const { FiShield, FiUser, FiLock, FiEye, FiEyeOff, FiAlertCircle } = FiIcons;
+const { FiShield, FiMail, FiLock, FiEye, FiEyeOff, FiAlertCircle } = FiIcons;
 
 const AdminLogin = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,25 +17,36 @@ const AdminLogin = ({ onLogin }) => {
     setLoading(true);
     setError('');
 
-    // Mock admin authentication
-    if (formData.username === 'admin' && formData.password === 'admin123') {
-      const adminData = {
-        name: 'Administrator',
-        email: 'admin@lilianadegbola.com',
-        role: 'admin'
-      };
-      onLogin(adminData);
-    } else {
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password
+    });
+
+    if (authError) {
       setError('Invalid credentials. Please try again.');
       setLoading(false);
+      return;
     }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles_la2024')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
+
+    if (profileError || profile?.role !== 'admin') {
+      await supabase.auth.signOut();
+      setError('Access denied. Admin privileges required.');
+      setLoading(false);
+      return;
+    }
+
+    onLogin({ id: data.user.id, email: data.user.email, role: 'admin' });
+    setLoading(false);
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -49,7 +58,6 @@ const AdminLogin = ({ onLogin }) => {
         className="w-full max-w-md"
       >
         <div className="bg-white rounded-2xl shadow-2xl p-8">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="w-20 h-20 bg-navy-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <SafeIcon icon={FiShield} className="w-10 h-10 text-gold-400" />
@@ -62,7 +70,6 @@ const AdminLogin = ({ onLogin }) => {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -74,24 +81,23 @@ const AdminLogin = ({ onLogin }) => {
             </motion.div>
           )}
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="username" className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                Username
+              <label htmlFor="email" className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
+                Email
               </label>
               <div className="relative">
                 <input
-                  id="username"
-                  name="username"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
-                  value={formData.username}
+                  value={formData.email}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all duration-200 font-montserrat"
-                  placeholder="Enter admin username"
+                  placeholder="admin@example.com"
                 />
-                <SafeIcon icon={FiUser} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <SafeIcon icon={FiMail} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               </div>
             </div>
 
@@ -130,16 +136,6 @@ const AdminLogin = ({ onLogin }) => {
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 p-4 bg-gold-50 border border-gold-200 rounded-lg">
-            <h3 className="font-montserrat font-semibold text-gold-800 mb-2">Demo Credentials</h3>
-            <div className="text-sm font-montserrat text-gold-700">
-              <p>Username: <strong>admin</strong></p>
-              <p>Password: <strong>admin123</strong></p>
-            </div>
-          </div>
-
-          {/* Security Notice */}
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500 font-montserrat">
               This is a secure administrative area. All access is logged and monitored.

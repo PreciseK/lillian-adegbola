@@ -1,44 +1,30 @@
 import supabase from './supabase';
 
-// Admin authentication with real credentials
 class AdminAuth {
-  constructor() {
-    this.currentUser = JSON.parse(localStorage.getItem('admin_user') || 'null');
-  }
-
   async login(email, password) {
     try {
-      // Real admin credentials
-      if (email === 'Lilian.Adegbola' && password === 'Adegbola@2025') {
-        const user = {
-          id: '1',
-          email: 'Lilian.Adegbola',
-          name: 'Lillian Adegbola',
-          role: 'super_admin'
-        };
-        
-        this.currentUser = user;
-        localStorage.setItem('admin_user', JSON.stringify(user));
-        return { success: true, user };
-      } else {
-        return { success: false, error: 'Invalid credentials' };
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return { success: false, error: error.message };
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles_la2024')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profileError || profile?.role !== 'admin') {
+        await supabase.auth.signOut();
+        return { success: false, error: 'Access denied. Admin privileges required.' };
       }
-    } catch (error) {
-      return { success: false, error: error.message };
+
+      return { success: true, user: { id: data.user.id, email: data.user.email, role: 'admin' } };
+    } catch (err) {
+      return { success: false, error: err.message };
     }
   }
 
-  logout() {
-    this.currentUser = null;
-    localStorage.removeItem('admin_user');
-  }
-
-  isAuthenticated() {
-    return !!this.currentUser;
-  }
-
-  getUser() {
-    return this.currentUser;
+  async logout() {
+    await supabase.auth.signOut();
   }
 }
 

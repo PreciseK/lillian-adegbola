@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLogin from './admin/AdminLogin';
 import AdminDashboard from './admin/AdminDashboard';
-import adminAuth from '../lib/adminAuth';
+import supabase from '../lib/supabase';
 
 const AdminRoute = () => {
   const navigate = useNavigate();
@@ -10,15 +10,37 @@ const AdminRoute = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setIsAuthenticated(adminAuth.isAuthenticated());
-    setLoading(false);
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setIsAuthenticated(false);
+        setLoading(false);
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles_la2024')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      setIsAuthenticated(profile?.role === 'admin');
+      setLoading(false);
+    };
+
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) setIsAuthenticated(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = (user) => {
-    setIsAuthenticated(true);
-  };
+  const handleLogin = () => setIsAuthenticated(true);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsAuthenticated(false);
     navigate('/');
   };

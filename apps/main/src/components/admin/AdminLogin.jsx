@@ -78,13 +78,13 @@ const AdminLogin = ({ onLogin }) => {
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
               />
               <input
-                type="text"
+                type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
-                placeholder="Lilian.Adegbola"
+                placeholder="admin@example.com"
               />
             </div>
           </div>

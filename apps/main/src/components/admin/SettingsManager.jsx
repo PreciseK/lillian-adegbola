@@ -102,11 +102,9 @@ const SettingsManager = () => {
     auto_excerpt: true,
     related_posts: true,
 
-    // Email Settings
+    // Email Settings (SMTP credentials are stored as Edge Function env vars, not here)
     smtp_host: '',
     smtp_port: 587,
-    smtp_username: '',
-    smtp_password: '',
     smtp_secure: true,
     from_email: 'clarityqueen23@gmail.com',
     from_name: 'Lillian Adegbola',
@@ -1149,31 +1147,15 @@ const SettingsManager = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    SMTP Username
-                  </label>
-                  <input
-                    type="text"
-                    name="smtp_username"
-                    value={formData.smtp_username}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    SMTP Password
-                  </label>
-                  <input
-                    type="password"
-                    name="smtp_password"
-                    value={formData.smtp_password}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
-                  />
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <span className="text-amber-600 mt-0.5">⚠</span>
+                  <div>
+                    <p className="font-medium text-amber-800 text-sm">SMTP credentials must be set as environment variables</p>
+                    <p className="text-xs text-amber-700 font-montserrat mt-1">
+                      Store <code>SMTP_USERNAME</code> and <code>SMTP_PASSWORD</code> in your Supabase project under Edge Functions → Secrets. Never save credentials to the database.
+                    </p>
+                  </div>
                 </div>
               </div>
 

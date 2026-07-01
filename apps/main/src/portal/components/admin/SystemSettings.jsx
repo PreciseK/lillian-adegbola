@@ -22,12 +22,10 @@ const SystemSettings = () => {
     allowRegistration: true,
     requireEmailVerification: true,
 
-    // Email Settings
+    // Email Settings (SMTP credentials stored as Edge Function env vars, not here)
     emailProvider: 'smtp',
     smtpHost: 'smtp.gmail.com',
     smtpPort: '587',
-    smtpUsername: 'noreply@lilianadegbola.com',
-    smtpPassword: '',
     fromEmail: 'noreply@lilianadegbola.com',
     fromName: 'Lillian Adegbola Platform',
 
@@ -39,17 +37,13 @@ const SystemSettings = () => {
     requireStrongPasswords: true,
     allowSocialLogin: true,
 
-    // Raystack Payment Settings
+    // Payment Settings (secret key stored as Edge Function env var, not here)
     paystackPublicKey: '',
-    paystackSecretKey: '',
-    // Removed old fields to avoid confusion, though DB might still have them if not cleaned
     currency: 'NGN',
     taxRate: '0',
 
-    // Storage Settings
+    // Storage Settings (AWS credentials stored as Edge Function env vars, not here)
     storageProvider: 'aws',
-    awsAccessKey: '',
-    awsSecretKey: '',
     awsBucket: '',
     awsRegion: 'us-east-1',
     maxFileSize: '50',
@@ -146,8 +140,7 @@ const SystemSettings = () => {
           action: 'test-smtp',
           payload: {
             email: settings.fromEmail,
-            provider: settings.emailProvider || 'smtp',
-            resendApiKey: settings.resendApiKey
+            provider: settings.emailProvider || 'smtp'
           }
         }
       });
@@ -370,17 +363,16 @@ const SystemSettings = () => {
                     </div>
 
                     {settings.emailProvider === 'resend' ? (
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                          Resend API Key
-                        </label>
-                        <input
-                          type="password"
-                          value={settings.resendApiKey || ''}
-                          onChange={(e) => updateSetting('resendApiKey', e.target.value)}
-                          placeholder="re_..."
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                        />
+                      <div className="md:col-span-2 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <div className="flex items-start space-x-3">
+                          <SafeIcon icon={FiShield} className="w-5 h-5 text-amber-600 mt-0.5" />
+                          <div>
+                            <p className="font-montserrat font-medium text-amber-800 text-sm">Set Resend API Key as Edge Function Environment Variable</p>
+                            <p className="text-xs text-amber-700 font-montserrat mt-1">
+                              Store <code>RESEND_API_KEY</code> in your Supabase project under Edge Functions → Secrets. Never save API keys to the database.
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <>
@@ -592,17 +584,16 @@ const SystemSettings = () => {
                           placeholder="pk_test_..."
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                          Secret Key
-                        </label>
-                        <input
-                          type="password"
-                          value={settings.paystackSecretKey || ''}
-                          onChange={(e) => updateSetting('paystackSecretKey', e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                          placeholder="sk_test_..."
-                        />
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <div className="flex items-start space-x-3">
+                          <SafeIcon icon={FiShield} className="w-5 h-5 text-amber-600 mt-0.5" />
+                          <div>
+                            <p className="font-montserrat font-medium text-amber-800 text-sm">Set Secret Key as Edge Function Environment Variable</p>
+                            <p className="text-xs text-amber-700 font-montserrat mt-1">
+                              Store <code>PAYSTACK_SECRET_KEY</code> in your Supabase project under Edge Functions → Secrets. Never save secret keys to the database.
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
