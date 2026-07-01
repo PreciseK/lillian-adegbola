@@ -81,7 +81,7 @@ const Login = ({ onLogin }) => {
                   className="flex items-center justify-center lg:justify-start space-x-4 mb-6"
                 >
                   <a
-                    href="https://portal.lillianadegbola.com"
+                    href="https://lillianadegbola.com"
                     className="flex items-center space-x-4 hover:opacity-90 transition-opacity"
                   >
                     <div className="w-20 h-20 bg-gold-gradient rounded-full flex items-center justify-center">
