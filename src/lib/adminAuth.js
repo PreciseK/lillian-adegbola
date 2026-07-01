@@ -26,6 +26,27 @@ class AdminAuth {
   async logout() {
     await supabase.auth.signOut();
   }
+
+  getUser() {
+    try {
+      const keys = Object.keys(localStorage);
+      const authKey = keys.find(key => key.startsWith('sb-') && key.endsWith('-auth-token'));
+      if (authKey) {
+        const session = JSON.parse(localStorage.getItem(authKey));
+        if (session?.user) {
+          return {
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.name || session.user.email?.split('@')[0],
+            role: 'admin'
+          };
+        }
+      }
+    } catch (e) {
+      console.error('Error getting cached admin user:', e);
+    }
+    return null;
+  }
 }
 
 export default new AdminAuth();
