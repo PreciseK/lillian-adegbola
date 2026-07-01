@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.8"
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -13,6 +14,11 @@ serve(async (req) => {
     try {
         const { action, payload } = await req.json()
 
+        // Initialize Supabase Client using environment keys
+        const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+        const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
         let result = {}
         let message = ''
 
@@ -24,12 +30,25 @@ serve(async (req) => {
                 result = { imported: payload?.count || 50, failed: 0 }
                 break
 
-            case 'user-export':
-                // Simulate export
-                await new Promise(resolve => setTimeout(resolve, 1500))
-                message = 'User data export ready for download.'
-                result = { url: 'https://example.com/export/users_2024.csv' }
+            case 'user-export': {
+                // Export real user database profiles from profiles_la2024
+                const { data: users } = await supabase
+                    .from('profiles_la2024')
+                    .select('first_name, last_name, email, membership_tier, created_at');
+
+                const csvLines = ['First Name,Last Name,Email,Tier,Joined Date'];
+                users?.forEach(u => {
+                    csvLines.push(`"${u.first_name || ''}","${u.last_name || ''}","${u.email || ''}","${u.membership_tier || ''}","${u.created_at || ''}"`);
+                });
+
+                const csvContent = csvLines.join('\n');
+                const base64Csv = btoa(csvContent);
+                const downloadUrl = `data:text/csv;base64,${base64Csv}`;
+
+                message = `Successfully exported ${users?.length || 0} user records.`
+                result = { rows: users?.length || 0, format: 'csv', url: downloadUrl }
                 break
+            }
 
             case 'migrate-tier':
                 // Simulate migration
@@ -60,7 +79,7 @@ serve(async (req) => {
             JSON.stringify({ success: false, error: error.message }),
             {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 400,
+                status: 200, // Return 200 so the client can inspect the JSON payload
             }
         )
     }
