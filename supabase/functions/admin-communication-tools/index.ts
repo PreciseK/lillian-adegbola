@@ -1,46 +1,45 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.8"
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts"
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// ================================================================
+// Send email via Resend HTTP API (works reliably from Supabase Edge Functions)
+// Required secrets: RESEND_API_KEY, RESEND_FROM_EMAIL, RESEND_FROM_NAME
+// ================================================================
 async function sendEmail(to: string, subject: string, html: string) {
-    const smtpHost = Deno.env.get('SMTP_HOST')
-    const smtpPort = parseInt(Deno.env.get('SMTP_PORT') || '465')
-    const smtpUser = Deno.env.get('SMTP_USER')
-    const smtpPass = Deno.env.get('SMTP_PASS')
-    const fromName = Deno.env.get('SMTP_FROM_NAME') || 'Lillian Adegbola'
+    const apiKey = Deno.env.get('RESEND_API_KEY')
+    const fromEmail = Deno.env.get('RESEND_FROM_EMAIL') || 'onboarding@resend.dev'
+    const fromName = Deno.env.get('RESEND_FROM_NAME') || 'Lillian Adegbola'
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
-        throw new Error('SMTP credentials not configured. Set SMTP_HOST, SMTP_USER, SMTP_PASS in Supabase Secrets.')
+    if (!apiKey) {
+        throw new Error('RESEND_API_KEY is not set in Supabase Secrets.')
     }
 
-    const client = new SMTPClient({
-        connection: {
-            hostname: smtpHost,
-            port: smtpPort,
-            tls: smtpPort === 465,
-            auth: {
-                username: smtpUser,
-                password: smtpPass,
-            },
+    const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
         },
+        body: JSON.stringify({
+            from: `${fromName} <${fromEmail}>`,
+            to: [to],
+            subject,
+            html,
+        }),
     })
 
-    try {
-        await client.send({
-            from: `${fromName} <${smtpUser}>`,
-            to: to,
-            subject: subject,
-            content: "auto",
-            html: html,
-        })
-    } finally {
-        await client.close()
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(`Resend error: ${data.message || res.statusText}`)
     }
+
+    return data
 }
 
 serve(async (req) => {
@@ -89,9 +88,9 @@ serve(async (req) => {
             case 'send-single': {
                 const { to, subject, html } = payload || {}
                 if (!to || !subject || !html) throw new Error('Missing required fields: to, subject, html')
-                await sendEmail(to, subject, html)
+                const emailResult = await sendEmail(to, subject, html)
                 message = `Email sent to ${to} successfully.`
-                result = { status: 'sent', recipient: to, timestamp: new Date().toISOString() }
+                result = { status: 'sent', recipient: to, id: emailResult.id, timestamp: new Date().toISOString() }
                 break
             }
 
@@ -113,16 +112,19 @@ serve(async (req) => {
             case 'test-smtp': {
                 const { email } = payload || {}
                 if (!email) throw new Error('Email address is required for testing.')
-                await sendEmail(
+                const emailResult = await sendEmail(
                     email,
                     'Test Email – Lillian Adegbola Platform',
-                    `<h2 style="color:#1a3a5c;">✅ SMTP Configuration Working</h2>
-                     <p>Your cPanel SMTP is correctly configured for the Lillian Adegbola platform.</p>
-                     <p>All platform emails will now be sent using your custom mail server.</p>
-                     <br><p style="color:#888;font-size:12px;">Sent at: ${new Date().toISOString()}</p>`
+                    `<div style="font-family:sans-serif;max-width:600px;margin:auto;padding:32px;">
+                        <h2 style="color:#1a3a5c;">✅ Email Configuration Working</h2>
+                        <p>Your Resend integration is correctly configured for the Lillian Adegbola platform.</p>
+                        <p>All platform emails (contact replies, notifications, bulk emails) will now be delivered reliably.</p>
+                        <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+                        <p style="color:#888;font-size:12px;">Sent at: ${new Date().toISOString()}</p>
+                    </div>`
                 )
-                message = `Test email sent to ${email} successfully. SMTP is working.`
-                result = { status: 'sent', recipient: email, timestamp: new Date().toISOString() }
+                message = `Test email sent to ${email} successfully. Resend ID: ${emailResult.id}`
+                result = { status: 'sent', recipient: email, id: emailResult.id, timestamp: new Date().toISOString() }
                 break
             }
 

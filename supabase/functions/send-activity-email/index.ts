@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.8"
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts"
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
@@ -10,40 +9,38 @@ const corsHeaders = {
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
+// ================================================================
+// Send email via Resend HTTP API
+// Required secrets: RESEND_API_KEY, RESEND_FROM_EMAIL, RESEND_FROM_NAME
+// ================================================================
 async function sendEmail(to: string, subject: string, html: string) {
-    const smtpHost = Deno.env.get('SMTP_HOST')
-    const smtpPort = parseInt(Deno.env.get('SMTP_PORT') || '465')
-    const smtpUser = Deno.env.get('SMTP_USER')
-    const smtpPass = Deno.env.get('SMTP_PASS')
-    const fromName = Deno.env.get('SMTP_FROM_NAME') || 'Lillian Adegbola'
+    const apiKey = Deno.env.get('RESEND_API_KEY')
+    const fromEmail = Deno.env.get('RESEND_FROM_EMAIL') || 'onboarding@resend.dev'
+    const fromName = Deno.env.get('RESEND_FROM_NAME') || 'Lillian Adegbola'
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
-        throw new Error('SMTP credentials not configured in Supabase Secrets (SMTP_HOST, SMTP_USER, SMTP_PASS).')
+    if (!apiKey) {
+        throw new Error('RESEND_API_KEY is not set in Supabase Secrets.')
     }
 
-    const client = new SMTPClient({
-        connection: {
-            hostname: smtpHost,
-            port: smtpPort,
-            tls: smtpPort === 465,
-            auth: {
-                username: smtpUser,
-                password: smtpPass,
-            },
+    const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
         },
+        body: JSON.stringify({
+            from: `${fromName} <${fromEmail}>`,
+            to: [to],
+            subject,
+            html,
+        }),
     })
 
-    try {
-        await client.send({
-            from: `${fromName} <${smtpUser}>`,
-            to: to,
-            subject: subject,
-            content: "auto",
-            html: html,
-        })
-    } finally {
-        await client.close()
+    const data = await res.json()
+    if (!res.ok) {
+        throw new Error(`Resend error: ${data.message || res.statusText}`)
     }
+    return data
 }
 
 interface EmailRequest {
@@ -63,10 +60,10 @@ serve(async (req) => {
         const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!)
         const { type, subject, html, target_user_id, to } = await req.json() as EmailRequest
 
-        // Direct single email (contact replies, etc.)
+        // Direct single-recipient email (e.g. contact form reply)
         if (type === 'direct' && to) {
-            await sendEmail(to, subject, html)
-            return new Response(JSON.stringify({ success: true, sent_count: 1 }), {
+            const emailResult = await sendEmail(to, subject, html)
+            return new Response(JSON.stringify({ success: true, sent_count: 1, id: emailResult.id }), {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },
                 status: 200,
             })
