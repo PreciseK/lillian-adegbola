@@ -183,11 +183,8 @@ const SystemSettings = () => {
   const tabs = [
     { id: 'general', name: 'General', icon: FiSettings },
     { id: 'email', name: 'Email', icon: FiMail },
-    { id: 'security', name: 'Security', icon: FiShield },
     { id: 'payments', name: 'Payments', icon: FiCreditCard },
-    { id: 'storage', name: 'Storage', icon: FiCloud },
-    { id: 'notifications', name: 'Notifications', icon: FiBell },
-    { id: 'api', name: 'API', icon: FiCode }
+    { id: 'notifications', name: 'Notifications', icon: FiBell }
   ];
 
   const systemStatus = [
@@ -467,74 +464,6 @@ const SystemSettings = () => {
                 </div>
               )}
 
-              {/* Security Settings */}
-              {activeTab === 'security' && (
-                <div className="space-y-6">
-                  <h2 className="text-xl font-playfair font-bold text-navy-800">Security Settings</h2>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Session Timeout (minutes)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.sessionTimeout}
-                        onChange={(e) => updateSetting('sessionTimeout', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Password Min Length
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.passwordMinLength}
-                        onChange={(e) => updateSetting('passwordMinLength', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-luxury-pearl rounded-lg">
-                      <div>
-                        <h3 className="font-montserrat font-medium text-navy-800">Two-Factor Authentication</h3>
-                        <p className="text-sm text-gray-600 font-montserrat">Enable 2FA for admin accounts</p>
-                      </div>
-                      <ToggleSwitch
-                        enabled={settings.twoFactorAuth}
-                        onChange={(value) => updateSetting('twoFactorAuth', value)}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-luxury-pearl rounded-lg">
-                      <div>
-                        <h3 className="font-montserrat font-medium text-navy-800">Require Strong Passwords</h3>
-                        <p className="text-sm text-gray-600 font-montserrat">Enforce complex password requirements</p>
-                      </div>
-                      <ToggleSwitch
-                        enabled={settings.requireStrongPasswords}
-                        onChange={(value) => updateSetting('requireStrongPasswords', value)}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-luxury-pearl rounded-lg">
-                      <div>
-                        <h3 className="font-montserrat font-medium text-navy-800">Allow Social Login</h3>
-                        <p className="text-sm text-gray-600 font-montserrat">Enable login with Google, Facebook, etc.</p>
-                      </div>
-                      <ToggleSwitch
-                        enabled={settings.allowSocialLogin}
-                        onChange={(value) => updateSetting('allowSocialLogin', value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Payment Settings */}
               {activeTab === 'payments' && (
                 <div className="space-y-6">
@@ -600,68 +529,6 @@ const SystemSettings = () => {
                 </div>
               )}
 
-              {/* Storage Settings */}
-              {activeTab === 'storage' && (
-                <div className="space-y-6">
-                  <h2 className="text-xl font-playfair font-bold text-navy-800">Storage Configuration</h2>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Max File Size (MB)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.maxFileSize}
-                        onChange={(e) => updateSetting('maxFileSize', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Allowed File Types
-                      </label>
-                      <input
-                        type="text"
-                        value={settings.allowedFileTypes}
-                        onChange={(e) => updateSetting('allowedFileTypes', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                        placeholder="jpg,png,pdf,mp4"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        AWS S3 Bucket
-                      </label>
-                      <input
-                        type="text"
-                        value={settings.awsBucket}
-                        onChange={(e) => updateSetting('awsBucket', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        AWS Region
-                      </label>
-                      <select
-                        value={settings.awsRegion}
-                        onChange={(e) => updateSetting('awsRegion', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      >
-                        <option value="us-east-1">US East (N. Virginia)</option>
-                        <option value="us-west-2">US West (Oregon)</option>
-                        <option value="eu-west-1">Europe (Ireland)</option>
-                        <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Notifications Settings */}
               {activeTab === 'notifications' && (
                 <div className="space-y-6">
@@ -700,104 +567,6 @@ const SystemSettings = () => {
                         onChange={(value) => updateSetting('smsNotifications', value)}
                       />
                     </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Slack Webhook URL
-                      </label>
-                      <input
-                        type="url"
-                        value={settings.slackWebhook}
-                        onChange={(e) => updateSetting('slackWebhook', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                        placeholder="https://hooks.slack.com/..."
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Discord Webhook URL
-                      </label>
-                      <input
-                        type="url"
-                        value={settings.discordWebhook}
-                        onChange={(e) => updateSetting('discordWebhook', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                        placeholder="https://discord.com/api/webhooks/..."
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* API Settings */}
-              {activeTab === 'api' && (
-                <div className="space-y-6">
-                  <h2 className="text-xl font-playfair font-bold text-navy-800">API Configuration</h2>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Rate Limit (requests/hour)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.apiRateLimit}
-                        onChange={(e) => updateSetting('apiRateLimit', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Timeout (seconds)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.apiTimeout}
-                        onChange={(e) => updateSetting('apiTimeout', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                      />
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-montserrat font-medium text-navy-700 mb-2">
-                        Allowed Origins (CORS)
-                      </label>
-                      <input
-                        type="text"
-                        value={settings.allowedOrigins}
-                        onChange={(e) => updateSetting('allowedOrigins', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent font-montserrat"
-                        placeholder="https://example.com,https://app.example.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 bg-luxury-pearl rounded-lg">
-                    <div>
-                      <h3 className="font-montserrat font-medium text-navy-800">CORS Enabled</h3>
-                      <p className="text-sm text-gray-600 font-montserrat">Allow cross-origin requests</p>
-                    </div>
-                    <ToggleSwitch
-                      enabled={settings.corsEnabled}
-                      onChange={(value) => updateSetting('corsEnabled', value)}
-                    />
-                  </div>
-
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div className="flex items-center space-x-3">
-                      <SafeIcon icon={FiKey} className="w-5 h-5 text-yellow-600" />
-                      <div>
-                        <h3 className="font-montserrat font-medium text-yellow-800">API Keys</h3>
-                        <p className="text-sm text-yellow-600 font-montserrat">Manage API keys for external integrations</p>
-                      </div>
-                    </div>
-                    <button className="mt-3 bg-yellow-600 text-white px-4 py-2 rounded-lg font-montserrat font-medium hover:bg-yellow-700 transition-colors">
-                      Manage API Keys
-                    </button>
                   </div>
                 </div>
               )}
