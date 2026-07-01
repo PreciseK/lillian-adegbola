@@ -353,6 +353,20 @@ const AdminTools = () => {
       alert(`${tool.name} Success: ${data.message}`);
       console.log('Tool Result:', data);
 
+      if (data.data?.url) {
+        const link = document.createElement('a');
+        link.href = data.data.url;
+        if (data.data.url.startsWith('data:text/csv')) {
+          const filename = `${tool.name.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}.csv`;
+          link.setAttribute('download', filename);
+        } else {
+          link.setAttribute('target', '_blank');
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
     } catch (error) {
       console.error('Error running tool:', error);
       alert(`${tool.name} Failed: ${error.message || 'Unknown error'}`);
