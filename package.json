@@ -1,0 +1,15 @@
+{
+  "name": "lillian-adegbola",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:main": "npm run dev --workspace=apps/main",
+    "dev:portal": "npm run dev --workspace=apps/portal",
+    "build:main": "npm run build --workspace=apps/main",
+    "build:portal": "npm run build --workspace=apps/portal",
+    "build": "npm run build:main && npm run build:portal"
+  }
+}
