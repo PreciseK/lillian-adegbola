@@ -14,7 +14,10 @@ const Hero = () => {
   const [portraitUrl, setPortraitUrl] = useState('https://data.scriptsedgeonline.com/wp-content/uploads/2025/08/z-9c5N1_400x400.jpg');
   const [siteSettings, setSiteSettings] = useState({
     site_title: 'Lillian Adegbola',
-    site_tagline: 'The Queen of Clarity & Purpose'
+    site_tagline: 'The Queen of Clarity & Purpose',
+    stat_leaders_transformed: '500+',
+    stat_success_rate: '95%',
+    stat_years_experience: '15+',
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,7 +31,7 @@ const Hero = () => {
       const { data, error } = await supabase
         .from('site_settings_la2024')
         .select('key, value')
-        .in('key', ['portrait_url', 'hero_portrait_url', 'site_title', 'site_tagline']);
+        .in('key', ['portrait_url', 'hero_portrait_url', 'site_title', 'site_tagline', 'stat_leaders_transformed', 'stat_success_rate', 'stat_years_experience']);
 
       if (error) {
         console.error('❌ Supabase error:', error);
@@ -201,10 +204,13 @@ const Hero = () => {
               {/* Stats - Responsive grid */}
               <motion.div variants={itemVariants} className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8">
                 {[
-                  { icon: FiAward, number: "500+", label: "Leaders Transformed" },
-                  { icon: FiTrendingUp, number: "95%", label: "Success Rate" },
-                  { icon: FiStar, number: "15+", label: "Years Experience" }
-                ].map((stat, index) => (
+                  { icon: FiAward, key: 'stat_leaders_transformed', label: "Leaders Transformed" },
+                  { icon: FiTrendingUp, key: 'stat_success_rate', label: "Success Rate" },
+                  { icon: FiStar, key: 'stat_years_experience', label: "Years Experience" }
+                ].map(item => ({
+                  ...item,
+                  number: siteSettings[item.key]
+                })).filter(stat => stat.number !== undefined && stat.number !== null && stat.number !== '' && stat.number !== 0 && stat.number !== '0').map((stat, index) => (
                   <motion.div
                     key={index}
                     whileHover={{ y: -5 }}

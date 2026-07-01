@@ -118,6 +118,10 @@ const SettingsManager = () => {
     gdpr_enabled: false,
     ccpa_enabled: false,
     age_verification: false,
+    stat_leaders_transformed: '500+',
+    stat_success_rate: '95%',
+    stat_years_experience: '15+',
+    stat_organizations_served: '50+',
   });
 
   useEffect(() => {
@@ -415,6 +419,74 @@ const SettingsManager = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
                   placeholder="Your business address (optional)"
                 />
+              </div>
+
+              {/* Impact Metrics (Stats / Ratings) */}
+              <div className="border-t border-gray-200 pt-6 mt-6">
+                <h4 className="text-base font-playfair font-bold text-navy-800 mb-2">
+                  Impact Statistics (Homepage Ratings)
+                </h4>
+                <p className="text-xs text-gray-500 mb-4 font-montserrat">
+                  Configure the rating metrics displayed on the home page. Set any metric to 0 or leave it empty to hide it on the website.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Leaders Transformed (e.g., 500+)
+                    </label>
+                    <input
+                      type="text"
+                      name="stat_leaders_transformed"
+                      value={formData.stat_leaders_transformed}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="500+"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Success Rate (e.g., 95%)
+                    </label>
+                    <input
+                      type="text"
+                      name="stat_success_rate"
+                      value={formData.stat_success_rate}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="95%"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Years of Experience (e.g., 15+)
+                    </label>
+                    <input
+                      type="text"
+                      name="stat_years_experience"
+                      value={formData.stat_years_experience}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="15+"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Organizations Served (e.g., 50+)
+                    </label>
+                    <input
+                      type="text"
+                      name="stat_organizations_served"
+                      value={formData.stat_organizations_served}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="50+"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}

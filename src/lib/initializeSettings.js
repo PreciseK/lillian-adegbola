@@ -132,6 +132,12 @@ const defaultSettings = {
   ccpa_enabled: false,
   age_verification: false,
 
+  // Impact Metrics
+  stat_leaders_transformed: '500+',
+  stat_success_rate: '95%',
+  stat_years_experience: '15+',
+  stat_organizations_served: '50+',
+
   // SEO Performance
   lazy_loading: true,
   image_optimization: true,

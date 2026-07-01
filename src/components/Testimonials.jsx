@@ -13,6 +13,12 @@ const Testimonials = () => {
   const [loading, setLoading] = useState(true);
   const [showTransformationModal, setShowTransformationModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [siteSettings, setSiteSettings] = useState({
+    stat_leaders_transformed: '500+',
+    stat_success_rate: '95%',
+    stat_years_experience: '15+',
+    stat_organizations_served: '50+'
+  });
 
   // Demo testimonials as fallback
   const demoTestimonials = [
@@ -53,7 +59,33 @@ const Testimonials = () => {
 
   useEffect(() => {
     fetchTestimonials();
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('site_settings_la2024')
+        .select('key, value')
+        .in('key', ['stat_leaders_transformed', 'stat_success_rate', 'stat_years_experience', 'stat_organizations_served']);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const settings = {};
+        data.forEach(setting => {
+          try {
+            settings[setting.key] = typeof setting.value === 'string' ? JSON.parse(setting.value) : setting.value;
+          } catch {
+            settings[setting.key] = setting.value;
+          }
+        });
+        setSiteSettings(prev => ({ ...prev, ...settings }));
+      }
+    } catch (error) {
+      console.error('Error fetching stats settings:', error);
+    }
+  };
 
   const fetchTestimonials = async () => {
     try {
@@ -211,11 +243,11 @@ const Testimonials = () => {
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {[
-                { number: "500+", label: "Leaders Transformed", icon: FiStar },
-                { number: "95%", label: "Success Rate", icon: FiStar },
-                { number: "15+", label: "Years Experience", icon: FiStar },
-                { number: "50+", label: "Organizations Served", icon: FiStar }
-              ].map((stat, index) => (
+                { number: siteSettings.stat_leaders_transformed, label: "Leaders Transformed", icon: FiStar },
+                { number: siteSettings.stat_success_rate, label: "Success Rate", icon: FiStar },
+                { number: siteSettings.stat_years_experience, label: "Years Experience", icon: FiStar },
+                { number: siteSettings.stat_organizations_served, label: "Organizations Served", icon: FiStar }
+              ].filter(stat => stat.number !== undefined && stat.number !== null && stat.number !== '' && stat.number !== 0 && stat.number !== '0').map((stat, index) => (
                 <motion.div
                   key={index}
                   whileHover={{ y: -5, scale: 1.05 }}
