@@ -1,109 +1,102 @@
-# Lillian Adegbola Website
+# Lillian Adegbola Professional Website & Member Portal
 
-A professional website for leadership coach and keynote speaker Lillian Adegbola, featuring admin dashboard, blog management, and client engagement tools.
+A premium, unified web application for leadership coach and keynote speaker Lillian Adegbola. This codebase consolidates the public-facing professional website and the private members portal into a single React SPA powered by Supabase.
 
-## Quick Start
+---
 
-### For Windows Users:
+## 🌟 Key Features
+
+### 1. Public Professional Website
+- **Modern Responsive Design:** Crafted with high-end typography, smooth transitions, and premium color palettes.
+- **Leadership Blog:** Dynamic post management, featured imagery, and built-in SEO metadata customization.
+- **Consultation Bookings:** Form scheduling with relational backend logging.
+- **Client Engagement:** Secure contact forms, newsletter subscription widgets, and testimonial showcases.
+
+### 2. Private Member Portal (`/portal`)
+- **Dashboard:** Unified membership overview with action-driven KPI cards.
+- **Self-Coaching Tools:** Custom goal tracker, interactive schedule calendar, and personal development analytics.
+- **Learning & Shop:** Immersive courses catalog and product shop for coaching assets.
+- **Community Forum:** Threaded community board for member networking.
+- **Account & Security:** Custom subscription tiers, member profile customization, and secure authentication.
+
+### 3. Conjoined Admin Control Center (`/admin`)
+- Combined management controls for website operations (blog posts, consultations, contact logs, testimonials, and profiles) and portal content (users, orders, support tickets, course curriculum, shop inventory, and system diagnostics).
+- Unified admin authentication checks via database-level admin role permissions.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Frontend:** React 18 (Vite, Tailwind CSS, Framer Motion)
+- **Backend:** Supabase (Auth, Postgres, Realtime, Storage)
+- **Routing:** React Router v6 (`BrowserRouter` with rewrite configuration)
+- **Emailing:** Resend Integration
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone & Install Dependencies
 ```bash
-# Double-click build.bat or run:
-build.bat
-```
+# Clone the repository
+git clone https://github.com/PreciseK/lillian-adegbola.git
+cd lillian-adegbola
 
-### For Mac/Linux Users:
-```bash
-# Make executable and run:
-chmod +x build-and-deploy.sh
-./build-and-deploy.sh
-```
-
-### Manual Build:
-```bash
+# Install packages
 npm install
-npm run build
 ```
 
-## Deployment to cPanel
-
-### Method 1: File Manager Upload
-1. Run the build script above
-2. Login to your cPanel
-3. Open File Manager → public_html
-4. Upload ALL files from the `dist` folder
-5. Upload the `.htaccess` file
-6. Test your website
-
-### Method 2: ZIP Upload (Easier)
-1. After building, you'll have `lillian-website-deploy.zip`
-2. Upload this ZIP to cPanel File Manager
-3. Extract it in public_html
-4. Upload the `.htaccess` file separately
-
-## Admin Access
-- URL: `yourdomain.com/#/admin`
-- Username: `Lilian.Adegbola`
-- Password: `Adegbola@2025`
-
-## Features
-- ✅ Responsive design for all devices
-- ✅ Admin dashboard for content management
-- ✅ Blog system with rich content
-- ✅ Contact form with database storage
-- ✅ Booking system for consultations
-- ✅ Newsletter subscription
-- ✅ Testimonials management
-- ✅ SEO optimization
-- ✅ Social media integration
-
-## Technology Stack
-- **Frontend**: React 18, Vite, Tailwind CSS
-- **Backend**: Supabase (Database + Auth)
-- **Deployment**: Static hosting (cPanel compatible)
-- **Admin**: Full content management system
-
-## File Structure After Build
-```
-dist/
-├── index.html          # Main page
-├── assets/             # CSS, JS, images
-├── admin/              # Admin routes (handled by React Router)
-└── [other static files]
-```
-
-## Troubleshooting
-
-### Build Issues
-If you get ESLint errors:
+### 2. Configure Environment Variables
+Copy the `.env.example` file to `.env` and fill in your connection credentials:
 ```bash
-# Skip linting and build directly
-npm run build
+cp .env.example .env
 ```
+- **`VITE_SUPABASE_URL`**: Your remote Supabase Project URL.
+- **`VITE_SUPABASE_ANON_KEY`**: Your public/anonymous API key.
+- **`RESEND_API_KEY`**: API key for sending email notifications.
 
-### Routing Issues (404 on refresh)
-Make sure `.htaccess` is uploaded to handle React Router:
-```apache
-RewriteEngine On
-RewriteBase /
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+### 3. Deploy Supabase Database & Storage
+This repository uses the Supabase CLI to maintain migrations. To apply all local table structures, RLS rules, and storage configurations to your remote project:
+```bash
+# Push database structure & storage migrations
+npx supabase db push
 ```
+The migration will automatically:
+1. Initialize database tables (blogs, products, courses, orders, support tickets, profiles).
+2. Configure a public storage bucket named `website-images`.
+3. Set up Row Level Security (RLS) policies allowing public selects, but restricting write access strictly to admin users.
 
-### Admin Access Issues
-- Clear browser cache
-- Check URL: `yourdomain.com/#/admin`
-- Verify credentials: `Lilian.Adegbola` / `Adegbola@2025`
+### 4. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-## Support
-- Check browser console for JavaScript errors
-- Verify all files uploaded correctly
-- Ensure .htaccess file is in place
-- Test on different devices and browsers
+---
 
-## Performance
-- ✅ Optimized images and assets
-- ✅ Compressed CSS and JavaScript
-- ✅ Browser caching configured
-- ✅ Mobile-first responsive design
+## 📦 Deployment Guide
 
-Built with ❤️ for transformational leadership
+### Vercel Deployment
+The application is pre-configured for Vercel with SPA routing rewrite rules in `vercel.json`.
+1. Push your branch to GitHub.
+2. Connect your repository to Vercel.
+3. Configure the environment variables (`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`) in the project settings.
+4. Deploy!
+
+### cPanel / Apache Deployment
+1. Build the production assets:
+   ```bash
+   npm run build
+   ```
+2. Upload all files from the `dist/` directory directly into your server's `public_html` folder.
+3. Make sure to upload the `.htaccess` file (located in `public/.htaccess`) to the root of `public_html`. This ensures subpaths like `/portal` and `/admin` redirect correctly to `index.html` for client-side routing on page refresh.
+
+---
+
+## 🔐 Administrative Access
+- **Admin Panel URL:** `/admin`
+- Logging in requires an authenticated account that has `role = 'admin'` configured in the `profiles_la2024` database table.
+
+---
+
+Built with ❤️ for transformational leadership.
