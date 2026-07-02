@@ -515,6 +515,39 @@ const SettingsManager = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Site Status (Maintenance Mode) */}
+              <div className="border-t border-gray-200 pt-6 mt-6">
+                <h4 className="text-base font-playfair font-bold text-navy-800 mb-2">
+                  Site Status
+                </h4>
+                <p className="text-xs text-gray-500 mb-4 font-montserrat">
+                  Control the availability of your public website and user portal.
+                </p>
+
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 flex items-center justify-between">
+                  <div className="flex-1 pr-6">
+                    <h5 className="font-playfair font-bold text-amber-800 mb-1 text-sm md:text-base">
+                      Enable Maintenance Mode
+                    </h5>
+                    <p className="text-xs md:text-sm text-amber-700 font-montserrat leading-relaxed">
+                      When enabled, all pages (except the Admin Dashboard) will show a custom maintenance page. You can still access this dashboard to toggle it back off.
+                    </p>
+                  </div>
+                  <label className="flex items-center space-x-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      name="maintenance_mode"
+                      checked={formData.maintenance_mode}
+                      onChange={handleChange}
+                      className="rounded border-gray-300 text-gold-600 focus:ring-gold-500 w-5 h-5"
+                    />
+                    <span className="text-sm font-semibold text-amber-800 uppercase tracking-wider font-montserrat">
+                      {formData.maintenance_mode ? 'Active' : 'Inactive'}
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
           )}
 

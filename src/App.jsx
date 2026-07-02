@@ -15,6 +15,8 @@ import AdminRoute from './components/AdminRoute';
 import SEOHead from './components/SEOHead';
 import { initializeSettings } from './lib/initializeSettings';
 import PortalApp from './portal/App';
+import Maintenance from './components/Maintenance';
+import { useSettings } from './hooks/useSettings';
 import './App.css';
 
 // Component to handle scroll to top on route change
@@ -28,20 +30,28 @@ function ScrollToTop() {
   return null;
 }
 
-function App() {
-  useEffect(() => {
-    // Initialize settings when app loads
-    initializeSettings().then((success) => {
-      if (success) {
-        console.log('🎉 Website settings ready!');
-      } else {
-        console.log('⚠️ Using fallback settings');
-      }
-    });
-  }, []);
+function AppContent() {
+  const location = useLocation();
+  const { settings, loading } = useSettings(['maintenance_mode', 'maintenanceMode']);
+  const isAdminPath = location.pathname.startsWith('/admin');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-luxury-pearl flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy-800"></div>
+      </div>
+    );
+  }
+
+  // Check both keys to support both settings managers
+  const isMaintenanceMode = settings.maintenance_mode === true || settings.maintenanceMode === true;
+
+  if (isMaintenanceMode && !isAdminPath) {
+    return <Maintenance />;
+  }
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <Routes>
         {/* Portal Route */}
@@ -92,6 +102,25 @@ function App() {
           </div>
         } />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  useEffect(() => {
+    // Initialize settings when app loads
+    initializeSettings().then((success) => {
+      if (success) {
+        console.log('🎉 Website settings ready!');
+      } else {
+        console.log('⚠️ Using fallback settings');
+      }
+    });
+  }, []);
+
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
