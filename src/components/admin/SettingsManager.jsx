@@ -527,6 +527,35 @@ const SettingsManager = () => {
     }
   };
 
+  const handleAddNewService = () => {
+    const newService = {
+      id: `service_${Date.now()}`,
+      icon: 'FiBriefcase',
+      title: 'New Service',
+      subtitle: 'Nurture. Transform. Grow.',
+      description: 'Describe the details and benefits of this new service offering here.',
+      cta: 'Book a session',
+      color: 'from-navy-700 to-navy-900'
+    };
+    const currentList = formData.services_list || [];
+    setFormData({
+      ...formData,
+      services_list: [...currentList, newService]
+    });
+    setExpandedServiceIndex(currentList.length);
+  };
+
+  const handleDeleteService = (index) => {
+    if (window.confirm("Are you sure you want to delete this service? This action cannot be undone until you save settings.")) {
+      const updatedList = (formData.services_list || []).filter((_, idx) => idx !== index);
+      setFormData({
+        ...formData,
+        services_list: updatedList
+      });
+      setExpandedServiceIndex(null);
+    }
+  };
+
   const handleImageUpload = async (e, fieldName) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1219,12 +1248,21 @@ const SettingsManager = () => {
                         </div>
                       </div>
 
-                      {/* Individual Services Content */}
+                       {/* Individual Services Content */}
                       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
-                        <h4 className="text-md font-playfair font-bold text-navy-800 border-b border-gray-200 pb-3 flex items-center">
-                          <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
-                          Individual Services & Offerings ({formData.services_list?.length || 0})
-                        </h4>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-3 gap-3">
+                          <h4 className="text-md font-playfair font-bold text-navy-800 flex items-center">
+                            <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                            Individual Services & Offerings ({formData.services_list?.length || 0})
+                          </h4>
+                          <button
+                            type="button"
+                            onClick={handleAddNewService}
+                            className="px-3 py-1.5 border border-gold-400 text-navy-900 bg-gold-50 hover:bg-gold-100 rounded-lg text-xs font-semibold font-montserrat transition-all shadow-sm flex items-center"
+                          >
+                            + Add New Service
+                          </button>
+                        </div>
 
                         <div className="space-y-4">
                           {formData.services_list && formData.services_list.map((service, index) => (
@@ -1241,7 +1279,7 @@ const SettingsManager = () => {
                                   <span className="font-playfair font-bold text-navy-800 text-sm">
                                     {service.title || `Service ${index + 1}`}
                                   </span>
-                                  <span className="text-xs text-gray-500 font-montserrat font-medium">
+                                  <span className="text-xs text-gray-550 font-montserrat font-medium">
                                     ({service.id})
                                   </span>
                                 </div>
@@ -1329,6 +1367,16 @@ const SettingsManager = () => {
                                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
                                       placeholder="Service Description"
                                     />
+                                  </div>
+
+                                  <div className="flex justify-end pt-2 border-t border-gray-100">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteService(index)}
+                                      className="px-3 py-1.5 border border-red-300 text-red-700 bg-red-50 hover:bg-red-100 rounded-lg text-xs font-semibold font-montserrat transition-all"
+                                    >
+                                      Delete Service
+                                    </button>
                                   </div>
                                 </div>
                               )}
