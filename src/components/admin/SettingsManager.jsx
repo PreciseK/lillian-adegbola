@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import RichTextEditor from '../../common/RichTextEditor';
 
 const { FiSettings, FiSave, FiMail, FiPhone, FiLinkedin, FiInstagram, FiFacebook, FiGlobe, FiSearch, FiImage, FiFileText, FiEye, FiCode, FiShield, FiClock, FiDatabase, FiUpload, FiType, FiLock, FiTrendingUp, FiUsers, FiDollarSign, FiToggleLeft, FiToggleRight, FiKey, FiServer, FiMonitor, FiAlertTriangle, FiCheck } = FiIcons;
 
@@ -123,6 +124,30 @@ const SettingsManager = () => {
     stat_years_experience: '15+',
     stat_organizations_served: '50+',
     download_leadership_guide_url: '',
+
+    // Landing Page CMS Content
+    hero_tagline: 'The Queen of Clarity & Purpose',
+    hero_title_1: 'Transforming',
+    hero_title_accent_1: 'Leaders',
+    hero_title_2: 'Empowering',
+    hero_title_accent_2: 'Lives',
+    hero_description: 'Unlock your fearless potential and achieve sustainable positive transformation.',
+    hero_cta_primary: 'Start Your Transformation',
+    hero_cta_secondary: 'Explore Services',
+    about_badge: 'About Lillian',
+    about_heading_1: 'A Powerhouse',
+    about_heading_accent: 'of Transformation',
+    about_content: '',
+    about_cta: 'Discover My Story',
+    services_badge: 'My Offerings',
+    services_heading: 'Services & Coaching Solutions',
+    services_subtext: '',
+    testimonials_badge: 'Success Stories',
+    testimonials_heading: 'Transformation in Action',
+    testimonials_subtext: '',
+    contact_badge: 'Get In Touch',
+    contact_heading: 'Let\'s Begin Your Journey',
+    contact_subtext: '',
   });
 
   useEffect(() => {
@@ -243,6 +268,7 @@ const SettingsManager = () => {
 
   const tabs = [
     { id: 'general', name: 'General', icon: FiGlobe },
+    { id: 'cms', name: 'Landing Page CMS', icon: FiFileText },
     { id: 'images', name: 'Images', icon: FiImage },
     { id: 'seo', name: 'SEO & Meta', icon: FiSearch },
     { id: 'social', name: 'Social Media', icon: FiLinkedin },
@@ -546,6 +572,346 @@ const SettingsManager = () => {
                       {formData.maintenance_mode ? 'Active' : 'Inactive'}
                     </span>
                   </label>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Landing Page CMS Settings */}
+          {activeTab === 'cms' && (
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-lg font-playfair font-bold text-navy-800 mb-2">
+                  Landing Page Content Manager
+                </h3>
+                <p className="text-sm text-gray-600 font-montserrat mb-6">
+                  Customize the written content shown across the main sections of your public website.
+                </p>
+              </div>
+
+              {/* Hero Section */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
+                <h4 className="text-md font-playfair font-bold text-navy-800 border-b border-gray-200 pb-3 flex items-center">
+                  <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                  Hero Section
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Hero Tagline
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_tagline"
+                      value={formData.hero_tagline || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="The Queen of Clarity & Purpose"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Hero Description / Subtext
+                    </label>
+                    <textarea
+                      name="hero_description"
+                      value={formData.hero_description || ''}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="Unlock your fearless potential..."
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Headline Part 1
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_title_1"
+                      value={formData.hero_title_1 || ''}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      placeholder="Transforming"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Headline Accent 1 (Cursive)
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_title_accent_1"
+                      value={formData.hero_title_accent_1 || ''}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      placeholder="Leaders"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Headline Part 2
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_title_2"
+                      value={formData.hero_title_2 || ''}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      placeholder="Empowering"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Headline Accent 2 (Cursive)
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_title_accent_2"
+                      value={formData.hero_title_accent_2 || ''}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      placeholder="Lives"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Primary Button (CTA)
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_cta_primary"
+                      value={formData.hero_cta_primary || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="Start Your Transformation"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Secondary Button (CTA)
+                    </label>
+                    <input
+                      type="text"
+                      name="hero_cta_secondary"
+                      value={formData.hero_cta_secondary || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="Explore Services"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* About Section */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
+                <h4 className="text-md font-playfair font-bold text-navy-800 border-b border-gray-200 pb-3 flex items-center">
+                  <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                  About Section
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Section Badge
+                    </label>
+                    <input
+                      type="text"
+                      name="about_badge"
+                      value={formData.about_badge || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="About Lillian"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Heading Title Part 1
+                    </label>
+                    <input
+                      type="text"
+                      name="about_heading_1"
+                      value={formData.about_heading_1 || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="A Powerhouse"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Heading Accent (Cursive)
+                    </label>
+                    <input
+                      type="text"
+                      name="about_heading_accent"
+                      value={formData.about_heading_accent || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="of Transformation"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    About Biography (WYSIWYG Rich Text) *
+                  </label>
+                  <RichTextEditor
+                    value={formData.about_content || ''}
+                    onChange={(val) => setFormData(prev => ({ ...prev, about_content: val }))}
+                    placeholder="Write Lillian's biography/about content..."
+                    height={200}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    About Button text (CTA)
+                  </label>
+                  <input
+                    type="text"
+                    name="about_cta"
+                    value={formData.about_cta || ''}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                    placeholder="Discover My Story"
+                  />
+                </div>
+              </div>
+
+              {/* Services Section Header */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
+                <h4 className="text-md font-playfair font-bold text-navy-800 border-b border-gray-200 pb-3 flex items-center">
+                  <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                  Services Section Header
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Services Badge
+                    </label>
+                    <input
+                      type="text"
+                      name="services_badge"
+                      value={formData.services_badge || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="My Offerings"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Services Heading
+                    </label>
+                    <input
+                      type="text"
+                      name="services_heading"
+                      value={formData.services_heading || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                      placeholder="Services & Coaching Solutions"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Services Subtext
+                  </label>
+                  <textarea
+                    name="services_subtext"
+                    value={formData.services_subtext || ''}
+                    onChange={handleChange}
+                    rows={2}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
+                    placeholder="Tailored guidance and transformational experiences..."
+                  />
+                </div>
+              </div>
+
+              {/* Testimonials & Contact Headers */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
+                <h4 className="text-md font-playfair font-bold text-navy-800 border-b border-gray-200 pb-3 flex items-center">
+                  <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                  Other Landing Sections Header
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h5 className="font-playfair font-bold text-navy-800 text-sm">Testimonials Header</h5>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Badge</label>
+                      <input
+                        type="text"
+                        name="testimonials_badge"
+                        value={formData.testimonials_badge || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Heading</label>
+                      <input
+                        type="text"
+                        name="testimonials_heading"
+                        value={formData.testimonials_heading || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Subtext</label>
+                      <textarea
+                        name="testimonials_subtext"
+                        value={formData.testimonials_subtext || ''}
+                        onChange={handleChange}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h5 className="font-playfair font-bold text-navy-800 text-sm">Contact Header</h5>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Badge</label>
+                      <input
+                        type="text"
+                        name="contact_badge"
+                        value={formData.contact_badge || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Heading</label>
+                      <input
+                        type="text"
+                        name="contact_heading"
+                        value={formData.contact_heading || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Subtext</label>
+                      <textarea
+                        name="contact_subtext"
+                        value={formData.contact_subtext || ''}
+                        onChange={handleChange}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -18,6 +18,14 @@ const Hero = () => {
     stat_leaders_transformed: '500+',
     stat_success_rate: '95%',
     stat_years_experience: '15+',
+    hero_tagline: 'The Queen of Clarity & Purpose',
+    hero_title_1: 'Transforming',
+    hero_title_accent_1: 'Leaders',
+    hero_title_2: 'Empowering',
+    hero_title_accent_2: 'Lives',
+    hero_description: 'Unlock your fearless potential and achieve sustainable positive transformation. I help ambitious leaders and visionaries become the best authentic version of themselves.',
+    hero_cta_primary: 'Start Your Transformation',
+    hero_cta_secondary: 'Explore Services',
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,7 +39,23 @@ const Hero = () => {
       const { data, error } = await supabase
         .from('site_settings_la2024')
         .select('key, value')
-        .in('key', ['portrait_url', 'hero_portrait_url', 'site_title', 'site_tagline', 'stat_leaders_transformed', 'stat_success_rate', 'stat_years_experience']);
+        .in('key', [
+          'portrait_url',
+          'hero_portrait_url',
+          'site_title',
+          'site_tagline',
+          'stat_leaders_transformed',
+          'stat_success_rate',
+          'stat_years_experience',
+          'hero_tagline',
+          'hero_title_1',
+          'hero_title_accent_1',
+          'hero_title_2',
+          'hero_title_accent_2',
+          'hero_description',
+          'hero_cta_primary',
+          'hero_cta_secondary'
+        ]);
 
       if (error) {
         console.error('❌ Supabase error:', error);
@@ -155,19 +179,23 @@ const Hero = () => {
                 >
                   <SafeIcon icon={FiStar} className="text-gold-400 mr-2 text-sm sm:text-base" />
                   <span className="text-gold-400 font-montserrat font-medium text-sm sm:text-base">
-                    {siteSettings.site_tagline || 'The Queen of Clarity & Purpose'}
+                    {siteSettings.hero_tagline || siteSettings.site_tagline || 'The Queen of Clarity & Purpose'}
                   </span>
                 </motion.div>
 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair font-bold leading-tight">
-                  Transforming{' '}
-                  <span className="text-gold-400 font-dancing block font-bold mt-1 sm:mt-2">
-                    Leaders
-                  </span>
-                  <span className="text-white">Empowering </span>
-                  <span className="text-gold-400 font-dancing block font-bold mt-1 sm:mt-2">
-                    Lives
-                  </span>
+                  {siteSettings.hero_title_1 || 'Transforming'}{' '}
+                  {siteSettings.hero_title_accent_1 && (
+                    <span className="text-gold-400 font-dancing block font-bold mt-1 sm:mt-2">
+                      {siteSettings.hero_title_accent_1}
+                    </span>
+                  )}
+                  <span className="text-white">{siteSettings.hero_title_2 || 'Empowering'} </span>
+                  {siteSettings.hero_title_accent_2 && (
+                    <span className="text-gold-400 font-dancing block font-bold mt-1 sm:mt-2">
+                      {siteSettings.hero_title_accent_2}
+                    </span>
+                  )}
                 </h1>
               </motion.div>
 
@@ -175,9 +203,7 @@ const Hero = () => {
                 variants={itemVariants}
                 className="text-lg sm:text-xl lg:text-2xl text-gray-200 font-montserrat leading-relaxed max-w-2xl"
               >
-                Unlock your <span className="text-gold-400 font-semibold">fearless potential</span> and achieve{' '}
-                <span className="text-gold-400 font-semibold">sustainable positive transformation</span>.
-                I help ambitious leaders and visionaries become the best authentic version of themselves.
+                {siteSettings.hero_description}
               </motion.p>
 
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -187,7 +213,7 @@ const Hero = () => {
                   onClick={handleTransformationClick}
                   className="bg-gold-gradient text-navy-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-montserrat font-bold text-base sm:text-lg shadow-2xl hover:shadow-gold-400/25 transition-all duration-300 flex items-center justify-center group w-full sm:w-auto"
                 >
-                  Start Your Transformation
+                  {siteSettings.hero_cta_primary || 'Start Your Transformation'}
                   <SafeIcon icon={FiArrowRight} className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
 
@@ -197,7 +223,7 @@ const Hero = () => {
                   onClick={() => handleNavClick('#services')}
                   className="border-2 border-gold-400 text-gold-400 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-montserrat font-bold text-base sm:text-lg hover:bg-gold-400 hover:text-navy-900 transition-all duration-300 w-full sm:w-auto"
                 >
-                  Explore Services
+                  {siteSettings.hero_cta_secondary || 'Explore Services'}
                 </motion.button>
               </motion.div>
 

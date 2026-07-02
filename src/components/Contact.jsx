@@ -18,7 +18,16 @@ const Contact = () => {
   });
   const [showBookingModal, setShowBookingModal] = useState(false);
   const { submitContactForm, loading, error } = useContact();
-  const { settings } = useSettings(['download_leadership_guide_url']);
+  const { settings } = useSettings([
+    'download_leadership_guide_url',
+    'contact_badge',
+    'contact_heading',
+    'contact_subtext'
+  ]);
+
+  const contactBadge = settings.contact_badge || 'Get In Touch';
+  const contactHeading = settings.contact_heading || 'Let\'s Begin Your Journey';
+  const contactSubtext = settings.contact_subtext || 'Ready to gain clarity, unlock your fearless potential, and create rapid results? Contact me today to book a keynote or starting session.';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -119,20 +128,16 @@ const Contact = () => {
               className="inline-flex items-center bg-navy-900/80 px-3 sm:px-4 py-2 rounded-full mb-4 sm:mb-6"
             >
               <span className="text-luxury-gold font-montserrat font-medium text-sm sm:text-base">
-                Get In Touch
+                {contactBadge}
               </span>
             </motion.div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-playfair font-bold text-navy-800 mb-4 sm:mb-6 leading-tight">
-              Ready to Begin Your
-              <span className="text-navy-900 font-dancing block font-bold mt-2">
-                Transformation?
-              </span>
+              {contactHeading}
             </h2>
 
             <p className="text-lg sm:text-xl text-gray-700 font-montserrat max-w-3xl mx-auto leading-relaxed">
-              Let's connect and explore how we can unlock your potential, achieve your goals, and create{' '}
-              <span className="text-navy-900 font-semibold">sustainable positive transformation</span> together.
+              {contactSubtext}
             </p>
           </motion.div>
 

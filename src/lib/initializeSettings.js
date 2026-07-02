@@ -157,43 +157,79 @@ const defaultSettings = {
     'keynote speaker',
     'business coach',
     'transformation coach'
-  ])
+  ]),
+
+  // Landing Page CMS Content
+  // Hero Section
+  hero_tagline: 'The Queen of Clarity & Purpose',
+  hero_title_1: 'Transforming',
+  hero_title_accent_1: 'Leaders',
+  hero_title_2: 'Empowering',
+  hero_title_accent_2: 'Lives',
+  hero_description: 'Unlock your fearless potential and achieve sustainable positive transformation. I help ambitious leaders and visionaries become the best authentic version of themselves.',
+  hero_cta_primary: 'Start Your Transformation',
+  hero_cta_secondary: 'Explore Services',
+
+  // About Section
+  about_badge: 'About Lillian',
+  about_heading_1: 'A Powerhouse',
+  about_heading_accent: 'of Transformation',
+  about_content: '<p>With my <strong>multi-gifted, multi-talented, and multi-skilled</strong> expertise, I have created incredible experiences, solutions, and results for many individuals, leaders, businesses, organizations, and non-profits.</p><p>I am <strong>bold, authentic, and dignified</strong>. As the Queen of Clarity, Rapid Results, and Purpose, I help confident and courageous people become the best authentic version of themselves or their business.</p><p>My passion lies in <strong>Sustainable Positive Transformation</strong> - guiding you to unlock your fearless potential and live with clarity, freedom, purpose, impact, peace, joy, and fulfillment.</p>',
+  about_cta: 'Discover My Story',
+
+  // Services Section
+  services_badge: 'My Offerings',
+  services_heading: 'Services & Coaching Solutions',
+  services_subtext: 'Tailored guidance and transformational experiences designed to help you, your team, or your organization lead with clarity and achieve rapid, sustainable results.',
+
+  // Testimonials Section
+  testimonials_badge: 'Success Stories',
+  testimonials_heading: 'Transformation in Action',
+  testimonials_subtext: 'Read authentic feedback and stories of leaders and visionaries who have undergone sustainable positive transformation.',
+
+  // Contact Section
+  contact_badge: 'Get In Touch',
+  contact_heading: 'Let\'s Begin Your Journey',
+  contact_subtext: 'Ready to gain clarity, unlock your fearless potential, and create rapid results? Contact me today to book a keynote or starting session.'
 };
 
 export const initializeSettings = async () => {
   try {
     console.log('🔄 Initializing website settings...');
 
-    // Check if settings already exist
+    // Fetch existing settings keys
     const { data: existingSettings, error: fetchError } = await supabase
       .from('site_settings_la2024')
-      .select('key')
-      .limit(1);
+      .select('key');
 
     if (fetchError) {
       console.error('❌ Error checking settings:', fetchError);
       return false;
     }
 
-    if (existingSettings && existingSettings.length > 0) {
-      console.log('✅ Settings already exist in database');
+    const existingKeys = new Set(existingSettings?.map(s => s.key) || []);
+
+    // Filter out defaults that already exist in database
+    const missingSettings = Object.entries(defaultSettings)
+      .filter(([key]) => !existingKeys.has(key))
+      .map(([key, value]) => ({
+        key,
+        value: JSON.stringify(value),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }));
+
+    if (missingSettings.length === 0) {
+      console.log('✅ All default settings already exist');
       return true;
     }
 
-    console.log('🔄 No settings found, inserting defaults...');
+    console.log(`🔄 Inserting ${missingSettings.length} missing settings...`);
 
-    // Insert default settings
-    const settingsToInsert = Object.entries(defaultSettings).map(([key, value]) => ({
-      key,
-      value: JSON.stringify(value),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }));
-
-    // Insert in batches to avoid overwhelming the database
+    // Insert missing settings in batches to avoid overwhelming the database
     const batchSize = 10;
-    for (let i = 0; i < settingsToInsert.length; i += batchSize) {
-      const batch = settingsToInsert.slice(i, i + batchSize);
+    for (let i = 0; i < missingSettings.length; i += batchSize) {
+      const batch = missingSettings.slice(i, i + batchSize);
       const { error: insertError } = await supabase
         .from('site_settings_la2024')
         .insert(batch);
@@ -203,10 +239,10 @@ export const initializeSettings = async () => {
         throw insertError;
       }
 
-      console.log(`✅ Inserted batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(settingsToInsert.length / batchSize)}`);
+      console.log(`✅ Inserted missing settings batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(missingSettings.length / batchSize)}`);
     }
 
-    console.log('✅ Default settings initialized successfully!');
+    console.log('✅ Default settings initialized/synchronized successfully!');
     return true;
 
   } catch (error) {

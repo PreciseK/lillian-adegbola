@@ -2,10 +2,29 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
+import { useSettings } from '../hooks/useSettings';
 
 const { FiHeart, FiZap, FiTarget, FiShield } = FiIcons;
 
 const About = () => {
+  const { settings } = useSettings([
+    'about_badge',
+    'about_heading_1',
+    'about_heading_accent',
+    'about_content',
+    'about_cta'
+  ]);
+
+  const aboutBadge = settings.about_badge || 'About Lillian';
+  const aboutHeading1 = settings.about_heading_1 || 'A Powerhouse';
+  const aboutHeadingAccent = settings.about_heading_accent || 'of Transformation';
+  const aboutCta = settings.about_cta || 'Discover My Story';
+  const aboutContent = settings.about_content || `
+    <p>With my <strong>multi-gifted, multi-talented, and multi-skilled</strong> expertise, I have created incredible experiences, solutions, and results for many individuals, leaders, businesses, organizations, and non-profits.</p>
+    <p>I am <strong>bold, authentic, and dignified</strong>. As the Queen of Clarity, Rapid Results, and Purpose, I help confident and courageous people become the best authentic version of themselves or their business.</p>
+    <p>My passion lies in <strong>Sustainable Positive Transformation</strong> - guiding you to unlock your fearless potential and live with clarity, freedom, purpose, impact, peace, joy, and fulfillment.</p>
+  `;
+
   const values = [
     {
       icon: FiTarget,
@@ -52,38 +71,27 @@ const About = () => {
                 whileInView={{ scale: 1 }}
                 transition={{ delay: 0.3, type: "spring" }}
                 viewport={{ once: true }}
-                className="inline-flex items-center bg-navy-900/80 px-2 py-1 rounded-full"
+                className="inline-flex items-center bg-navy-900/80 px-3 py-1 rounded-full"
               >
                 <span className="text-luxury-gold font-montserrat font-medium text-sm sm:text-base">
-                  About Lillian
+                  {aboutBadge}
                 </span>
               </motion.div>
               
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-playfair font-bold text-navy-800 leading-tight">
-                A Powerhouse
-                <span className="text-navy-900 font-dancing block mt-2">
-                  of Transformation
-                </span>
+                {aboutHeading1}{' '}
+                {aboutHeadingAccent && (
+                  <span className="text-navy-900 font-dancing block mt-2">
+                    {aboutHeadingAccent}
+                  </span>
+                )}
               </h2>
             </div>
 
-            <div className="space-y-4 sm:space-y-6 text-gray-700 font-montserrat text-base sm:text-lg leading-relaxed">
-              <p>
-                With my <span className="text-navy-900 font-semibold">multi-gifted, multi-talented, and multi-skilled</span> expertise, 
-                I have created incredible experiences, solutions, and results for many individuals, leaders, businesses, organizations, and non-profits.
-              </p>
-              
-              <p>
-                I am <span className="text-navy-900 font-semibold">bold, authentic, and dignified</span>. 
-                As the Queen of Clarity, Rapid Results, and Purpose, I help confident and courageous people become 
-                the best authentic version of themselves or their business.
-              </p>
-              
-              <p>
-                My passion lies in <span className="text-navy-900 font-semibold">Sustainable Positive Transformation</span> - 
-                guiding you to unlock your fearless potential and live with clarity, freedom, purpose, impact, peace, joy, and fulfillment.
-              </p>
-            </div>
+            <div 
+              className="space-y-4 sm:space-y-6 text-gray-700 font-montserrat text-base sm:text-lg leading-relaxed rich-text-container"
+              dangerouslySetInnerHTML={{ __html: aboutContent }}
+            />
 
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -91,7 +99,7 @@ const About = () => {
               className="inline-block"
             >
               <button className="bg-navy-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-montserrat font-semibold shadow-xl hover:bg-navy-900 transition-all duration-300 text-sm sm:text-base">
-                Discover My Story
+                {aboutCta}
               </button>
             </motion.div>
           </motion.div>

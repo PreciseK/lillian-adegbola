@@ -17,7 +17,10 @@ const Testimonials = () => {
     stat_leaders_transformed: '500+',
     stat_success_rate: '95%',
     stat_years_experience: '15+',
-    stat_organizations_served: '50+'
+    stat_organizations_served: '50+',
+    testimonials_badge: 'Success Stories',
+    testimonials_heading: 'Transformation in Action',
+    testimonials_subtext: 'Discover how visionary leaders and ambitious achievers have unlocked their potential and achieved remarkable results through our transformational coaching programs.'
   });
 
   // Demo testimonials as fallback
@@ -67,7 +70,15 @@ const Testimonials = () => {
       const { data, error } = await supabase
         .from('site_settings_la2024')
         .select('key, value')
-        .in('key', ['stat_leaders_transformed', 'stat_success_rate', 'stat_years_experience', 'stat_organizations_served']);
+        .in('key', [
+          'stat_leaders_transformed',
+          'stat_success_rate',
+          'stat_years_experience',
+          'stat_organizations_served',
+          'testimonials_badge',
+          'testimonials_heading',
+          'testimonials_subtext'
+        ]);
 
       if (error) throw error;
 
@@ -149,21 +160,16 @@ const Testimonials = () => {
             >
               <SafeIcon icon={FiStar} className="text-gold-400 mr-2" />
               <span className="text-luxury-gold font-montserrat font-medium text-sm sm:text-base">
-                Success Stories
+                {siteSettings.testimonials_badge}
               </span>
             </motion.div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-playfair font-bold text-white mb-4 sm:mb-6 leading-tight">
-              Leaders Who Have{' '}
-              <span className="text-luxury-gold font-bold font-dancing block mt-2">
-                Transformed
-              </span>
+              {siteSettings.testimonials_heading}
             </h2>
 
             <p className="text-lg sm:text-xl text-gray-300 font-montserrat max-w-3xl mx-auto leading-relaxed">
-              Discover how visionary leaders and ambitious achievers have unlocked their potential and achieved{' '}
-              <span className="text-luxury-gold font-semibold">remarkable results</span>{' '}
-              through our transformational coaching programs.
+              {siteSettings.testimonials_subtext}
             </p>
           </motion.div>
 

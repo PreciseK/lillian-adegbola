@@ -4,6 +4,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import TransformationModal from './TransformationModal';
 import BookingModal from './BookingModal';
+import { useSettings } from '../hooks/useSettings';
 
 const { FiMic, FiUsers, FiMapPin, FiCompass, FiBriefcase, FiHeart, FiMessageCircle, FiArrowRight, FiTarget, FiShield, FiStar, FiTrendingUp, FiBookOpen, FiSettings } = FiIcons;
 
@@ -11,6 +12,16 @@ const Services = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [showTransformationModal, setShowTransformationModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+
+  const { settings } = useSettings([
+    'services_badge',
+    'services_heading',
+    'services_subtext'
+  ]);
+
+  const servicesBadge = settings.services_badge || 'How I Can Help You';
+  const servicesHeading = settings.services_heading || 'Empowering Leaders & Transforming Lives';
+  const servicesSubtext = settings.services_subtext || 'As a multi-faceted expert, I have delivered exceptional results for individuals, leaders, and organizations (including businesses and non-profits). Known for my bold, authentic, and transformative approach, I empower and guide ambitious achievers, visionary leaders, and forward-thinking organizations to unlock, unleash and maximize their true and highest potential.';
 
   const services = [
     {
@@ -98,9 +109,9 @@ const Services = () => {
       id: 'conflict',
       icon: FiShield,
       title: 'Conflict Resolution & Mediation',
-      subtitle: 'Resolve Conflicts with Clarity and Purpose.',
-      description: 'Expert guidance for navigating complex disputes and finding mutually beneficial solutions. Through specialized conflict management services, Lillian Adegbola helps individuals and organizations resolve conflicts effectively, restore relationships, and move forward with confidence.',
-      cta: 'Resolve Conflicts with Ease. Schedule a Mediation Session Today!',
+      subtitle: 'Resolve Differences. Rebuild Trust.',
+      description: 'Unlock collaboration and rebuild trust with expert mediation and conflict resolution services. We facilitate dialogue and help parties find mutually beneficial solutions in professional environments.',
+      cta: 'Address conflict before it hinders performance. Schedule a session today.',
       color: 'from-navy-700 to-navy-900'
     },
     {
@@ -200,21 +211,16 @@ const Services = () => {
               className="inline-flex items-center bg-navy-900/80 px-3 sm:px-4 py-2 rounded-full mb-4 sm:mb-6"
             >
               <span className="text-luxury-gold font-montserrat font-medium text-sm sm:text-base">
-                How I Can Help You
+                {servicesBadge}
               </span>
             </motion.div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-playfair font-bold text-navy-800 mb-4 sm:mb-6 leading-tight">
-              Empowering Leaders
-              <span className="text-luxury-gold font-dancing block mt-2">
-                & Transforming Lives
-              </span>
+              {servicesHeading}
             </h2>
 
             <p className="text-base sm:text-lg lg:text-xl text-gray-700 font-montserrat max-w-4xl mx-auto leading-relaxed px-4">
-              As a multi-faceted expert, I have delivered exceptional results for individuals, leaders, and organizations (including businesses and non-profits). Known for my bold, authentic, and transformative approach, I empower and guide ambitious achievers, visionary leaders, and forward-thinking organizations to unlock, unleash and maximize their true and highest potential. As{' '}
-              <span className="text-luxury-gold font-semibold">the Queen of Clarity, Rapid Results, and Purpose,</span>{' '}
-              my passion is Sustainable Positive Transformation, enduring Impact and Legacy.
+              {servicesSubtext}
             </p>
           </motion.div>
 
