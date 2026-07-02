@@ -16,14 +16,15 @@ const Services = () => {
   const { settings } = useSettings([
     'services_badge',
     'services_heading',
-    'services_subtext'
+    'services_subtext',
+    'services_list'
   ]);
 
   const servicesBadge = settings.services_badge || 'How I Can Help You';
   const servicesHeading = settings.services_heading || 'Empowering Leaders & Transforming Lives';
   const servicesSubtext = settings.services_subtext || 'As a multi-faceted expert, I have delivered exceptional results for individuals, leaders, and organizations (including businesses and non-profits). Known for my bold, authentic, and transformative approach, I empower and guide ambitious achievers, visionary leaders, and forward-thinking organizations to unlock, unleash and maximize their true and highest potential.';
 
-  const services = [
+  const defaultServices = [
     {
       id: 'keynote',
       icon: FiMic,
@@ -151,6 +152,14 @@ const Services = () => {
       color: 'from-navy-700 to-navy-900'
     }
   ];
+
+  const services = settings.services_list && Array.isArray(settings.services_list) && settings.services_list.length > 0
+    ? settings.services_list.map(s => ({
+        ...s,
+        icon: FiIcons[s.icon] || FiIcons.FiBriefcase
+      }))
+    : defaultServices;
+
 
   // Listen for service selection events from the navbar
   useEffect(() => {

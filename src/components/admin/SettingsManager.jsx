@@ -13,6 +13,7 @@ const SettingsManager = () => {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [uploading, setUploading] = useState(false);
+  const [expandedServiceIndex, setExpandedServiceIndex] = useState(null);
   const [formData, setFormData] = useState({
     // General Settings
     site_title: 'Lillian Adegbola - Queen of Clarity & Purpose',
@@ -239,6 +240,18 @@ const SettingsManager = () => {
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
+  const handleServiceChange = (index, field, value) => {
+    const updatedServices = [...(formData.services_list || [])];
+    updatedServices[index] = {
+      ...updatedServices[index],
+      [field]: value
+    };
+    setFormData({
+      ...formData,
+      services_list: updatedServices
     });
   };
 
@@ -834,6 +847,124 @@ const SettingsManager = () => {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
                     placeholder="Tailored guidance and transformational experiences..."
                   />
+                </div>
+              </div>
+
+              {/* Individual Services Content */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
+                <h4 className="text-md font-playfair font-bold text-navy-800 border-b border-gray-200 pb-3 flex items-center">
+                  <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                  Individual Services & Offerings ({formData.services_list?.length || 0})
+                </h4>
+
+                <div className="space-y-4">
+                  {formData.services_list && formData.services_list.map((service, index) => (
+                    <div key={service.id || index} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                      <button
+                        type="button"
+                        onClick={() => setExpandedServiceIndex(expandedServiceIndex === index ? null : index)}
+                        className="w-full px-5 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <span className="text-xs font-semibold text-gold-600 bg-gold-55 px-2 py-0.5 rounded">
+                            {index + 1}
+                          </span>
+                          <span className="font-playfair font-bold text-navy-800 text-sm">
+                            {service.title || `Service ${index + 1}`}
+                          </span>
+                          <span className="text-xs text-gray-550 font-montserrat font-medium">
+                            ({service.id})
+                          </span>
+                        </div>
+                        <span className="text-navy-800 font-bold text-lg leading-none">
+                          {expandedServiceIndex === index ? '−' : '+'}
+                        </span>
+                      </button>
+
+                      {expandedServiceIndex === index && (
+                        <div className="p-5 border-t border-gray-200 space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Service Title
+                              </label>
+                              <input
+                                type="text"
+                                value={service.title || ''}
+                                onChange={(e) => handleServiceChange(index, 'title', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                                placeholder="Service Title"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Subtitle
+                              </label>
+                              <input
+                                type="text"
+                                value={service.subtitle || ''}
+                                onChange={(e) => handleServiceChange(index, 'subtitle', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                                placeholder="Subtitle"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Icon Component (Lucide/Feather name)
+                              </label>
+                              <select
+                                value={service.icon || ''}
+                                onChange={(e) => handleServiceChange(index, 'icon', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                              >
+                                <option value="FiMic">FiMic (Microphone)</option>
+                                <option value="FiUsers">FiUsers (Users/Coaching)</option>
+                                <option value="FiTarget">FiTarget (Target/Goal)</option>
+                                <option value="FiMapPin">FiMapPin (Map Pin/Retreats)</option>
+                                <option value="FiCompass">FiCompass (Compass/Advisory)</option>
+                                <option value="FiBriefcase">FiBriefcase (Briefcase/Business)</option>
+                                <option value="FiHeart">FiHeart (Heart/Life)</option>
+                                <option value="FiMessageCircle">FiMessageCircle (Message/Facilitation)</option>
+                                <option value="FiShield">FiShield (Shield/Mediation)</option>
+                                <option value="FiStar">FiStar (Star/Spiritual)</option>
+                                <option value="FiSettings">FiSettings (Settings/Consultant)</option>
+                                <option value="FiTrendingUp">FiTrendingUp (Trending Up/Capacity)</option>
+                                <option value="FiBookOpen">FiBookOpen (Book/Training)</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                CTA Text
+                              </label>
+                              <input
+                                type="text"
+                                value={service.cta || ''}
+                                onChange={(e) => handleServiceChange(index, 'cta', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                                placeholder="CTA Action Button Text"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                              Description
+                            </label>
+                            <textarea
+                              value={service.description || ''}
+                              onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
+                              rows={3}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat text-sm"
+                              placeholder="Service Description"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 

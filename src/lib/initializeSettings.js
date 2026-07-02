@@ -181,6 +181,134 @@ const defaultSettings = {
   services_badge: 'My Offerings',
   services_heading: 'Services & Coaching Solutions',
   services_subtext: 'Tailored guidance and transformational experiences designed to help you, your team, or your organization lead with clarity and achieve rapid, sustainable results.',
+  services_list: [
+    {
+      id: 'keynote',
+      icon: 'FiMic',
+      title: 'Keynote Speaker Services',
+      subtitle: 'Inspire Action. Transform Mindsets.',
+      description: 'As a dynamic keynote speaker, Lillian Adegbola delivers powerful talks that ignite leadership, drive growth, and inspire teams to achieve more. With expertise in leadership, collaboration, and personal effectiveness, her keynotes leave a lasting impact.',
+      cta: 'Book Lillian for your next event to spark transformation.',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'leadership',
+      icon: 'FiUsers',
+      title: 'Leadership Coaching',
+      subtitle: 'Unlock Your Potential. Lead with Confidence.',
+      description: 'Through personalized leadership coaching, Lillian Adegbola empowers leaders to discover their strengths, overcome obstacles, and reach their full potential. By fostering self-awareness, building resilience, and developing effective strategies, leaders can inspire their teams and drive success.',
+      cta: 'Ready to Elevate Your Leadership? Schedule a Discovery Call Today!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'executive',
+      icon: 'FiTarget',
+      title: 'Executive Coaching',
+      subtitle: 'Elevate Performance. Achieve Exceptional Results.',
+      description: 'As an executive coach, Lillian Adegbola partners with senior leaders to tackle complex challenges, enhance decision-making, and drive business growth. With tailored guidance and support, executives can refine their leadership style, build high-performing teams, and achieve outstanding results.',
+      cta: 'Let\'s Drive Exceptional Results Together! Book Your Executive Coaching Session Now!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'retreats',
+      icon: 'FiMapPin',
+      title: 'Destination Retreat Leader',
+      subtitle: 'Reconnect. Refocus. Renew.',
+      description: 'Join Lillian Adegbola on curated destination retreats blending leadership growth, team building, and personal renewal in inspiring settings. These transformative experiences help leaders and teams reconnect with purpose, refocus on goals, and renew their energy for impact.',
+      cta: 'Want to foster connection, creativity, and renewal? Plan Your Next Retreat. Let\'s Create an Unforgettable Experience!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'advisory',
+      icon: 'FiCompass',
+      title: 'Strategic Advisory',
+      subtitle: 'Strategic Insight. Trusted Counsel.',
+      description: 'As a seasoned advisor, Lillian Adegbola leverages her expertise in leadership, facilitation, and strategic thinking to guide organizations through challenges and opportunities. With a focus on driving growth, effectiveness, and innovation, she provides trusted counsel to inform critical decisions.',
+      cta: 'Let\'s Explore Strategic Opportunities. Schedule a Consultation Today!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'business',
+      icon: 'FiBriefcase',
+      title: 'Business Coaching',
+      subtitle: 'Grow Your Business. Unlock Potential.',
+      description: 'With expert business coaching, Lillian Adegbola helps entrepreneurs and business leaders overcome challenges, leverage strengths, and achieve growth. Through personalized guidance and accountability, she empowers businesses to boost performance, enhance strategies, and reach goals.',
+      cta: 'Partner with Lillian for business coaching tailored to your needs.',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'organizational',
+      icon: 'FiTrendingUp',
+      title: 'Organizational Development',
+      subtitle: 'Build High-Performing Teams. Drive Results.',
+      description: 'Lillian Adegbola supports organizational development through strategies that enhance teamwork, improve communication, and boost performance. With expertise in facilitation and leadership, she helps organizations build capacity, foster collaboration, and achieve sustainable results.',
+      cta: 'Work with Lillian to transform your organization\'s potential into impact.',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'life',
+      icon: 'FiHeart',
+      title: 'Life Coaching',
+      subtitle: 'Unlock Your Potential. Live with Purpose.',
+      description: 'With compassionate and expert life coaching, Lillian Adegbola helps individuals clarify goals, overcome obstacles, and create meaningful change. Through personalized support and strategies, she empowers clients to gain clarity, build confidence, find balance, and develop the courage to live an intentional and impactful life.',
+      cta: 'Partner with Lillian for life coaching that radically transforms your life journey.',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'facilitation',
+      icon: 'FiMessageCircle',
+      title: 'Facilitation Expertise',
+      subtitle: 'Transform Conversations. Unlock Collaboration.',
+      description: 'Expert facilitation unlocks collaboration, fuels innovation, and drives outcomes in leadership teams, workshops, and strategic meetings. With proven skills in guiding discussions, fostering participation, and managing dynamics, we help teams achieve more together.',
+      cta: 'Unlock Your Team\'s Potential. Let\'s Discuss How Expert Facilitation Can Elevate Your Meetings!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'conflict',
+      icon: 'FiShield',
+      title: 'Conflict Resolution & Mediation',
+      subtitle: 'Resolve Differences. Rebuild Trust.',
+      description: 'Unlock collaboration and rebuild trust with expert mediation and conflict resolution services. We facilitate dialogue and help parties find mutually beneficial solutions in professional environments.',
+      cta: 'Address conflict before it hinders performance. Schedule a session today.',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'spiritual',
+      icon: 'FiStar',
+      title: 'Spiritual Coach/Advisor',
+      subtitle: 'Nurture Your Spirit. Discover Your Path.',
+      description: 'Guided spiritual development for those seeking deeper meaning and purpose. Through personalized coaching and mentorship, Lillian Adegbola helps individuals connect with their inner selves and live a more authentic, fulfilling life.',
+      cta: 'Embark on Your Spiritual Journey. Schedule a Coaching Session Today!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'management',
+      icon: 'FiSettings',
+      title: 'Management Consultant',
+      subtitle: 'Elevate Performance. Achieve Sustainable Growth.',
+      description: 'As a seasoned Management Consultant, Lillian Adegbola provides strategic guidance to help organizations overcome challenges, optimize operations, and drive growth. With expertise in analysis, strategy, and implementation, she empowers businesses to achieve exceptional results.',
+      cta: 'Unlock Your Organization\'s Potential. Let\'s Discuss Your Strategic Needs Today!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'capacity',
+      icon: 'FiTrendingUp',
+      title: 'Capacity Development',
+      subtitle: 'Strengthen Your Organization. Amplify Your Impact.',
+      description: 'Through tailored capacity development initiatives, Lillian Adegbola helps organizations build the skills, systems, and structures needed to achieve their goals. From team training to process improvement, she supports sustainable growth and enhanced effectiveness.',
+      cta: 'Build Lasting Capacity. Explore Customized Development Solutions Today!',
+      color: 'from-navy-700 to-navy-900'
+    },
+    {
+      id: 'corporate',
+      icon: 'FiBookOpen',
+      title: 'Corporate Trainer',
+      subtitle: 'Empower Your Team. Drive Business Results.',
+      description: 'As a corporate trainer, Lillian Adegbola delivers engaging, results-driven training services that equip teams with the knowledge and skills needed to excel. From leadership development to functional training, she helps organizations unlock their full potential.',
+      cta: 'Elevate Your Team\'s Performance. Schedule a Training Session Today!',
+      color: 'from-navy-700 to-navy-900'
+    }
+  ],
 
   // Testimonials Section
   testimonials_badge: 'Success Stories',
