@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Services from './components/Services';
+import VideoShowcase from './components/VideoShowcase';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Blog from './components/Blog';
@@ -32,7 +33,7 @@ function ScrollToTop() {
 
 function AppContent() {
   const location = useLocation();
-  const { settings, loading } = useSettings(['maintenance_mode', 'maintenanceMode']);
+  const { settings, loading } = useSettings(['maintenance_mode']);
   const isAdminPath = location.pathname.startsWith('/admin');
 
   if (loading) {
@@ -43,8 +44,7 @@ function AppContent() {
     );
   }
 
-  // Check both keys to support both settings managers
-  const isMaintenanceMode = settings.maintenance_mode === true || settings.maintenanceMode === true;
+  const isMaintenanceMode = settings.maintenance_mode === true;
 
   if (isMaintenanceMode && !isAdminPath) {
     return <Maintenance />;
@@ -75,6 +75,7 @@ function AppContent() {
                   <Hero />
                   <About />
                   <Services />
+                  <VideoShowcase />
                   <Testimonials />
                   <Blog />
                   <Contact />

@@ -18,7 +18,7 @@ const SystemSettings = () => {
     // General Settings
     siteName: 'Lillian Adegbola Platform',
     siteDescription: 'Transform your journey with premium courses and resources',
-    maintenanceMode: false,
+    maintenance_mode: false,
     allowRegistration: true,
     requireEmailVerification: true,
 
@@ -309,8 +309,8 @@ const SystemSettings = () => {
                         <p className="text-sm text-gray-600 font-montserrat">Temporarily disable site access for maintenance</p>
                       </div>
                       <ToggleSwitch
-                        enabled={settings.maintenanceMode}
-                        onChange={(value) => updateSetting('maintenanceMode', value)}
+                        enabled={settings.maintenance_mode}
+                        onChange={(value) => updateSetting('maintenance_mode', value)}
                       />
                     </div>
 

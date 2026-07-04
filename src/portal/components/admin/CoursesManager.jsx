@@ -24,6 +24,7 @@ const CoursesManager = () => {
         lessons_count: 0,
         level: 'Beginner',
         image_url: '',
+        video_url: '',
         is_featured: false
     };
 
@@ -274,6 +275,20 @@ const CoursesManager = () => {
                                          onChange={(url) => setCurrentCourse({ ...currentCourse, image_url: url })}
                                      />
                                  </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium mb-1">Video Preview URL</label>
+                                    <input
+                                        type="url"
+                                        value={currentCourse.video_url || ''}
+                                        onChange={(e) => setCurrentCourse({ ...currentCourse, video_url: e.target.value })}
+                                        className="w-full border rounded-lg p-2"
+                                        placeholder="https://www.youtube.com/watch?v=... or https://example.com/preview.mp4"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Played when a student clicks the preview icon on the course card.
+                                    </p>
+                                </div>
 
                                 <div className="col-span-2 flex items-center gap-2">
                                     <input

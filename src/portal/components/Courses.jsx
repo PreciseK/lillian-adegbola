@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { resolveVideoEmbed } from '../../lib/videoEmbed';
 
-const { FiPlay, FiClock, FiUsers, FiStar, FiSearch, FiFilter, FiShoppingCart } = FiIcons;
+const { FiPlay, FiClock, FiUsers, FiStar, FiSearch, FiFilter, FiShoppingCart, FiX } = FiIcons;
 
 const Courses = ({ isLoggedIn }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [previewCourse, setPreviewCourse] = useState(null);
 
   const categories = [
     { id: 'all', name: 'All Courses' },
@@ -124,9 +126,16 @@ const Courses = ({ isLoggedIn }) => {
                   <div className="absolute top-4 left-4 bg-gold-500 text-white px-3 py-1 rounded-full text-sm font-montserrat font-medium">
                     Featured
                   </div>
-                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                    <SafeIcon icon={FiPlay} className="w-16 h-16 text-white" />
-                  </div>
+                  {course.video_url && (
+                    <button
+                      type="button"
+                      onClick={() => setPreviewCourse(course)}
+                      aria-label={`Play preview for ${course.title}`}
+                      className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"
+                    >
+                      <SafeIcon icon={FiPlay} className="w-16 h-16 text-white" />
+                    </button>
+                  )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-2">
@@ -191,9 +200,16 @@ const Courses = ({ isLoggedIn }) => {
               >
                 <div className="relative">
                   <img src={course.image_url} alt={course.title} className="w-full h-48 object-cover" />
-                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                    <SafeIcon icon={FiPlay} className="w-12 h-12 text-white" />
-                  </div>
+                  {course.video_url && (
+                    <button
+                      type="button"
+                      onClick={() => setPreviewCourse(course)}
+                      aria-label={`Play preview for ${course.title}`}
+                      className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"
+                    >
+                      <SafeIcon icon={FiPlay} className="w-12 h-12 text-white" />
+                    </button>
+                  )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-2">
@@ -245,6 +261,56 @@ const Courses = ({ isLoggedIn }) => {
           </motion.div>
         )}
       </div>
+
+      <AnimatePresence>
+        {previewCourse && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
+            onClick={() => setPreviewCourse(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="w-full max-w-3xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-white font-montserrat font-medium truncate pr-4">{previewCourse.title}</h3>
+                <button
+                  type="button"
+                  onClick={() => setPreviewCourse(null)}
+                  aria-label="Close preview"
+                  className="text-white hover:text-gold-400 transition-colors flex-shrink-0"
+                >
+                  <SafeIcon icon={FiX} className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+                {(() => {
+                  const video = resolveVideoEmbed(previewCourse.video_url);
+                  if (!video) return null;
+                  return video.type === 'file' ? (
+                    <video src={video.src} controls autoPlay className="w-full h-full object-contain" />
+                  ) : (
+                    <iframe
+                      src={video.src}
+                      title={`${previewCourse.title} preview`}
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  );
+                })()}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
