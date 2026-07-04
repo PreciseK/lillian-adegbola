@@ -11,8 +11,18 @@ const VIMEO_PATTERN = /vimeo\.com\/(?:video\/)?(\d+)/i;
 export const resolveVideoEmbed = (url) => {
   if (!url) return null;
 
-  if (DIRECT_FILE_PATTERN.test(url)) {
-    return { type: 'file', src: url };
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    return null;
+  }
+
+  if (DIRECT_FILE_PATTERN.test(parsed.pathname)) {
+    return { type: 'file', src: parsed.href };
   }
 
   const youtubeMatch = url.match(YOUTUBE_PATTERN);
@@ -25,5 +35,5 @@ export const resolveVideoEmbed = (url) => {
     return { type: 'iframe', src: `https://player.vimeo.com/video/${vimeoMatch[1]}` };
   }
 
-  return { type: 'iframe', src: url };
+  return { type: 'iframe', src: parsed.href };
 };
