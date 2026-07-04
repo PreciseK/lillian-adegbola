@@ -135,6 +135,10 @@ const Testimonials = () => {
     );
   }
 
+  if (testimonials.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <section id="testimonials" className="py-12 sm:py-16 lg:py-20 bg-navy-800 relative overflow-hidden">

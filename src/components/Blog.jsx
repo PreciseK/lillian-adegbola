@@ -199,6 +199,10 @@ Every powerful conversation has structure and intention.
 
   const featuredPosts = posts.filter(post => post.is_featured);
 
+  if (!loading && posts.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <section id="blog" className="py-20 bg-white relative overflow-hidden">
