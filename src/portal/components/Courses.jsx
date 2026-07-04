@@ -4,6 +4,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import supabase from '../../lib/supabase';
 import { resolveVideoEmbed } from '../../lib/videoEmbed';
+import LockedVideoPlayer from '../../components/LockedVideoPlayer';
 
 const { FiPlay, FiClock, FiUsers, FiStar, FiSearch, FiFilter, FiShoppingCart, FiX } = FiIcons;
 
@@ -290,23 +291,10 @@ const Courses = ({ isLoggedIn }) => {
                 </button>
               </div>
               <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
-                {(() => {
-                  const video = resolveVideoEmbed(previewCourse.video_url);
-                  if (!video) return null;
-                  return video.type === 'file' ? (
-                    <video src={video.src} controls autoPlay className="w-full h-full object-contain" />
-                  ) : (
-                    <iframe
-                      src={video.src}
-                      title={`${previewCourse.title} preview`}
-                      className="w-full h-full"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                    />
-                  );
-                })()}
+                <LockedVideoPlayer
+                  video={resolveVideoEmbed(previewCourse.video_url)}
+                  title={`${previewCourse.title} preview`}
+                />
               </div>
             </motion.div>
           </motion.div>

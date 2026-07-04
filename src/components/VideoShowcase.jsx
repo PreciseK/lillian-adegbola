@@ -4,6 +4,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import { useSettings } from '../hooks/useSettings';
 import { resolveVideoEmbed } from '../lib/videoEmbed';
+import LockedVideoPlayer from './LockedVideoPlayer';
 
 const { FiPlayCircle } = FiIcons;
 
@@ -55,23 +56,7 @@ const VideoShowcase = () => {
           viewport={{ once: true, amount: 0.3 }}
           className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10 aspect-video bg-black"
         >
-          {video.type === 'file' ? (
-            <video
-              src={video.src}
-              controls
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <iframe
-              src={video.src}
-              title="Homepage showcase video"
-              className="w-full h-full"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-            />
-          )}
+          <LockedVideoPlayer video={video} title="Homepage showcase video" />
         </motion.div>
       </div>
     </section>
