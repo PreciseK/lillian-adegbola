@@ -177,6 +177,8 @@ const defaultSettings = {
   about_heading_accent: 'of Transformation',
   about_content: '<p>With my <strong>multi-gifted, multi-talented, and multi-skilled</strong> expertise, I have created incredible experiences, solutions, and results for many individuals, leaders, businesses, organizations, and non-profits.</p><p>I am <strong>bold, authentic, and dignified</strong>. As the Queen of Clarity, Rapid Results, and Purpose, I help confident and courageous people become the best authentic version of themselves or their business.</p><p>My passion lies in <strong>Sustainable Positive Transformation</strong> - guiding you to unlock your fearless potential and live with clarity, freedom, purpose, impact, peace, joy, and fulfillment.</p>',
   about_cta: 'Discover My Story',
+  discover_story_content: '',
+  discover_story_images: [],
 
   // Services Section
   services_badge: 'My Offerings',

@@ -6,6 +6,7 @@ import supabase from '../../lib/supabase';
 import { friendlyError } from '../../lib/friendlyError';
 import { showToast } from '../../lib/toast';
 import RichTextEditor from '../../common/RichTextEditor';
+import ImageUploader from './ImageUploader';
 
 const { FiSettings, FiSave, FiMail, FiPhone, FiLinkedin, FiInstagram, FiFacebook, FiGlobe, FiSearch, FiImage, FiFileText, FiEye, FiCode, FiShield, FiClock, FiDatabase, FiUpload, FiType, FiLock, FiTrendingUp, FiUsers, FiDollarSign, FiToggleLeft, FiToggleRight, FiKey, FiServer, FiMonitor, FiAlertTriangle, FiCheck } = FiIcons;
 
@@ -143,6 +144,8 @@ const SettingsManager = () => {
     about_heading_accent: 'of Transformation',
     about_content: '',
     about_cta: 'Discover My Story',
+    discover_story_content: '',
+    discover_story_images: [],
     services_badge: 'My Offerings',
     services_heading: 'Services & Coaching Solutions',
     services_subtext: '',
@@ -972,6 +975,20 @@ const SettingsManager = () => {
                     </button>
                     <button
                       type="button"
+                      onClick={() => setCmsSubTab('story')}
+                      className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold font-montserrat transition-all flex items-center justify-between ${
+                        cmsSubTab === 'story'
+                          ? 'bg-navy-800 text-white shadow'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span>My Story</span>
+                      <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">
+                        Modal
+                      </span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => setCmsSubTab('services')}
                       className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold font-montserrat transition-all flex items-center justify-between ${
                         cmsSubTab === 'services'
@@ -1213,6 +1230,54 @@ const SettingsManager = () => {
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-transparent font-montserrat"
                           placeholder="Discover My Story"
                         />
+                      </div>
+                    </div>
+                  )}
+
+                  {cmsSubTab === 'story' && (
+                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-6">
+                      <div className="border-b border-gray-200 pb-3">
+                        <h4 className="text-md font-playfair font-bold text-navy-800 flex items-center">
+                          <span className="w-2.5 h-2.5 bg-gold-500 rounded-full mr-2"></span>
+                          "Discover My Story" Modal
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-1 font-montserrat">
+                          This is the content shown when a visitor clicks the "{formData.about_cta || 'Discover My Story'}" button in the About section.
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Story Content (WYSIWYG Rich Text)
+                        </label>
+                        <RichTextEditor
+                          value={formData.discover_story_content || ''}
+                          onChange={(val) => setFormData(prev => ({ ...prev, discover_story_content: val }))}
+                          placeholder="Write your story..."
+                          height={220}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Story Images (up to 3)
+                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {[0, 1, 2].map((index) => (
+                            <ImageUploader
+                              key={index}
+                              label={`Image ${index + 1}`}
+                              value={formData.discover_story_images?.[index] || ''}
+                              onChange={(url) => {
+                                setFormData(prev => {
+                                  const images = [...(prev.discover_story_images || [])];
+                                  images[index] = url;
+                                  return { ...prev, discover_story_images: images };
+                                });
+                              }}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}

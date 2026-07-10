@@ -6,12 +6,29 @@ import SafeIcon from '../common/SafeIcon';
 import PrivacyPolicyModal from './PrivacyPolicyModal';
 import TermsOfServiceModal from './TermsOfServiceModal';
 import logoIcon from '../assets/logo.png';
+import { useContact } from '../hooks/useContact';
+import { showToast } from '../lib/toast';
 
 const { FiMail, FiPhone, FiLinkedin, FiInstagram, FiFacebook, FiArrowUp } = FiIcons;
 
 const Footer = () => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const { subscribeToNewsletter, loading: subscribing } = useContact();
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+
+    const result = await subscribeToNewsletter(newsletterEmail);
+    if (result.success) {
+      showToast.success("You're subscribed! Thanks for joining.");
+      setNewsletterEmail('');
+    } else {
+      showToast.error(result.error);
+    }
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -255,20 +272,25 @@ const Footer = () => {
                 <p className="text-gray-300 font-montserrat mb-6">
                   Get weekly insights, leadership tips, and exclusive resources delivered to your inbox.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
+                <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4">
                   <input
                     type="email"
+                    required
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
                     placeholder="Enter your email address"
                     className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all duration-300 font-montserrat"
                   />
                   <motion.button
+                    type="submit"
+                    disabled={subscribing}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-gold-gradient text-navy-900 px-6 py-3 rounded-xl font-montserrat font-semibold shadow-xl hover:shadow-2xl transition-all duration-300"
+                    className="bg-gold-gradient text-navy-900 px-6 py-3 rounded-xl font-montserrat font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Subscribe
+                    {subscribing ? 'Subscribing...' : 'Subscribe'}
                   </motion.button>
-                </div>
+                </form>
               </div>
             </motion.div>
           </div>

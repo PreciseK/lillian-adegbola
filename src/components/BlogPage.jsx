@@ -4,6 +4,8 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import BlogPostModal from './BlogPostModal';
 import supabase from '../lib/supabase';
+import { useContact } from '../hooks/useContact';
+import { showToast } from '../lib/toast';
 
 const {FiCalendar,FiClock,FiUser,FiTag,FiEye,FiSearch,FiFilter,FiTrendingUp}=FiIcons;
 
@@ -15,6 +17,21 @@ const [showModal,setShowModal]=useState(false);
 const [selectedCategory,setSelectedCategory]=useState('all');
 const [searchTerm,setSearchTerm]=useState('');
 const [sortBy,setSortBy]=useState('newest');
+const [newsletterEmail, setNewsletterEmail] = useState('');
+const { subscribeToNewsletter, loading: subscribing } = useContact();
+
+const handleNewsletterSubmit = async (e) => {
+  e.preventDefault();
+  if (!newsletterEmail) return;
+
+  const result = await subscribeToNewsletter(newsletterEmail);
+  if (result.success) {
+    showToast.success("You're subscribed! Thanks for joining.");
+    setNewsletterEmail('');
+  } else {
+    showToast.error(result.error);
+  }
+};
 
 // Demo posts for fallback
 const demoPosts=[ 
@@ -402,20 +419,25 @@ Never Miss a Leadership Insight
 <p className="text-lg sm:text-xl font-montserrat text-gray-200 mb-6 sm:mb-8 leading-relaxed"> 
 Get weekly leadership tips,transformation stories,and exclusive resources delivered to your inbox. 
 </p> 
-<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto"> 
-<input 
-type="email" 
-placeholder="Enter your email" 
-className="flex-1 px-4 py-3 rounded-full text-navy-900 font-montserrat focus:ring-2 focus:ring-gold-400 focus:outline-none text-sm sm:text-base" 
-/> 
-<motion.button 
-whileHover={{scale: 1.05}} 
-whileTap={{scale: 0.95}} 
-className="bg-gold-gradient text-navy-900 px-6 py-3 rounded-full font-montserrat font-bold shadow-xl hover:shadow-2xl transition-all duration-300 text-sm sm:text-base" 
-> 
-Subscribe 
-</motion.button> 
-</div> 
+<form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
+<input
+type="email"
+required
+value={newsletterEmail}
+onChange={(e) => setNewsletterEmail(e.target.value)}
+placeholder="Enter your email"
+className="flex-1 px-4 py-3 rounded-full text-navy-900 font-montserrat focus:ring-2 focus:ring-gold-400 focus:outline-none text-sm sm:text-base"
+/>
+<motion.button
+type="submit"
+disabled={subscribing}
+whileHover={{scale: 1.05}}
+whileTap={{scale: 0.95}}
+className="bg-gold-gradient text-navy-900 px-6 py-3 rounded-full font-montserrat font-bold shadow-xl hover:shadow-2xl transition-all duration-300 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+>
+{subscribing ? 'Subscribing...' : 'Subscribe'}
+</motion.button>
+</form>
 </div> 
 </motion.div>
 </div>

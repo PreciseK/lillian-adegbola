@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import { useSettings } from '../hooks/useSettings';
+import DiscoverMyStoryModal from './DiscoverMyStoryModal';
 
 const { FiHeart, FiZap, FiTarget, FiShield } = FiIcons;
 
 const About = () => {
+  const [showStoryModal, setShowStoryModal] = useState(false);
   const { settings } = useSettings([
     'about_badge',
     'about_heading_1',
@@ -98,7 +100,10 @@ const About = () => {
               whileTap={{ scale: 0.95 }}
               className="inline-block"
             >
-              <button className="bg-navy-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-montserrat font-semibold shadow-xl hover:bg-navy-900 transition-all duration-300 text-sm sm:text-base">
+              <button
+                onClick={() => setShowStoryModal(true)}
+                className="bg-navy-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-montserrat font-semibold shadow-xl hover:bg-navy-900 transition-all duration-300 text-sm sm:text-base"
+              >
                 {aboutCta}
               </button>
             </motion.div>
@@ -160,6 +165,11 @@ const About = () => {
           </div>
         </motion.div>
       </div>
+
+      <DiscoverMyStoryModal
+        isOpen={showStoryModal}
+        onClose={() => setShowStoryModal(false)}
+      />
     </section>
   );
 };
