@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import { useSettings } from '../hooks/useSettings';
+import { sanitizeHtml } from '../lib/sanitizeHtml';
 
 const { FiX, FiBookOpen } = FiIcons;
 
@@ -85,7 +86,7 @@ const DiscoverMyStoryModal = ({ isOpen, onClose }) => {
               {storyContent ? (
                 <div
                   className="space-y-4 text-gray-700 font-montserrat leading-relaxed rich-text-container"
-                  dangerouslySetInnerHTML={{ __html: storyContent }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(storyContent) }}
                 />
               ) : (
                 <p className="text-gray-500 font-montserrat italic">

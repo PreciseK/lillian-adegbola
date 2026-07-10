@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
+import { sanitizeHtml } from '../lib/sanitizeHtml';
 
 const { FiX, FiCalendar, FiClock, FiUser, FiTag, FiEye, FiShare2, FiBookmark } = FiIcons;
 
@@ -198,7 +199,7 @@ const BlogPostModal = ({ isOpen, onClose, post }) => {
             <div className="prose prose-lg max-w-none">
               <div 
                 className="article-content"
-                dangerouslySetInnerHTML={{ __html: formatContent(post.content) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatContent(post.content)) }}
               />
             </div>
 

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import { useSettings } from '../hooks/useSettings';
+import { sanitizeHtml } from '../lib/sanitizeHtml';
 import DiscoverMyStoryModal from './DiscoverMyStoryModal';
 
 const { FiHeart, FiZap, FiTarget, FiShield } = FiIcons;
@@ -92,7 +93,7 @@ const About = () => {
 
             <div 
               className="space-y-4 sm:space-y-6 text-gray-700 font-montserrat text-base sm:text-lg leading-relaxed rich-text-container"
-              dangerouslySetInnerHTML={{ __html: aboutContent }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(aboutContent) }}
             />
 
             <motion.div
