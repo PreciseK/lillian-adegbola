@@ -17,6 +17,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'contacts', name: 'Contact Messages', icon: FiMail },
     { id: 'blog', name: 'Blog Posts', icon: FiEdit3 },
     { id: 'testimonials', name: 'Testimonials', icon: FiStar },
+    { id: 'gallery', name: 'Gallery', icon: FiImage },
     { id: 'resources', name: 'Resources', icon: FiFileText },
     { id: 'newsletter', name: 'Newsletter', icon: FiUsers },
     { id: 'portrait', name: 'Portrait Manager', icon: FiImage },

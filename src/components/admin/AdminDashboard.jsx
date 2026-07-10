@@ -9,6 +9,7 @@ import ContactManager from './ContactManager';
 import BlogManager from './BlogManager';
 import ResourcesManager from './ResourcesManager';
 import TestimonialsManager from './TestimonialsManager';
+import GalleryManager from './GalleryManager';
 import SettingsManager from './SettingsManager';
 import NewsletterManager from './NewsletterManager';
 import PortraitManager from './PortraitManager';
@@ -57,6 +58,8 @@ const AdminDashboard = ({ onLogout }) => {
         return <ResourcesManager />;
       case 'testimonials':
         return <TestimonialsManager />;
+      case 'gallery':
+        return <GalleryManager />;
       case 'newsletter':
         return <NewsletterManager />;
       case 'portrait':

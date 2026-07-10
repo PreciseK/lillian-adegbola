@@ -8,6 +8,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Services from './components/Services';
 import VideoShowcase from './components/VideoShowcase';
+import Gallery from './components/Gallery';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Blog from './components/Blog';
@@ -77,6 +78,7 @@ function AppContent() {
                   <About />
                   <Services />
                   <VideoShowcase />
+                  <Gallery />
                   <Testimonials />
                   <Blog />
                   <Contact />
