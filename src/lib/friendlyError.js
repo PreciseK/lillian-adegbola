@@ -45,6 +45,11 @@ export const friendlyError = (error, fallback = 'Something went wrong. Please tr
     return 'Password is too short. Please choose a longer password.';
   }
 
+  // Supabase Storage errors
+  if (message.includes('exceeded the maximum allowed size')) {
+    return 'That file is too large. Please upload an image under 15MB.';
+  }
+
   // Network failures (fetch/DNS/offline)
   if (message.includes('failed to fetch') || message.includes('networkerror') || message.includes('network request failed')) {
     return "Network error. Please check your connection and try again.";

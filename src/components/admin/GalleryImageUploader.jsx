@@ -6,6 +6,8 @@ import { friendlyError } from '../../lib/friendlyError';
 
 const { FiUpload, FiTrash2, FiLoader } = FiIcons;
 
+const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
+
 /**
  * Image uploader scoped to the gallery-images bucket. Unlike the generic
  * ImageUploader, every upload is quota-checked against the 2GB gallery
@@ -21,7 +23,14 @@ const GalleryImageUploader = ({ value, onChange, onUploaded, label = 'Image' }) 
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file');
+      setError('Please upload an image file.');
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setError('That file is too large. Please upload an image under 15MB.');
+      e.target.value = '';
       return;
     }
 
