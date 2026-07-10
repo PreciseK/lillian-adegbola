@@ -10,7 +10,7 @@ export const useBooking = () => {
     setError(null);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('bookings_la2024')
         .insert([{
           service_type: bookingData.service,
@@ -25,13 +25,12 @@ export const useBooking = () => {
           message: bookingData.message,
           timezone: bookingData.timezone || 'EST',
           status: 'pending'
-        }])
-        .select();
+        }]);
 
       if (error) throw error;
 
       setLoading(false);
-      return { success: true, data: data[0] };
+      return { success: true };
     } catch (err) {
       setError(err.message);
       setLoading(false);
