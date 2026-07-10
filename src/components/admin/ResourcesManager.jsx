@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 import ImageUploader from './ImageUploader';
 
 const {
@@ -90,7 +91,7 @@ const ResourcesManager = () => {
             setShowModal(false);
         } catch (error) {
             console.error('Error saving resource:', error);
-            alert('Error saving resource');
+            showToast.error('Error saving resource');
         }
     };
 
@@ -108,7 +109,7 @@ const ResourcesManager = () => {
             setResources(resources.filter(res => res.id !== resourceId));
         } catch (error) {
             console.error('Error deleting resource:', error);
-            alert('Error deleting resource');
+            showToast.error('Error deleting resource');
         }
     };
 

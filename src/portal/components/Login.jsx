@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
+import InlineError from '../../common/InlineError';
+import { friendlyError } from '../../lib/friendlyError';
+import { showToast } from '../../lib/toast';
 
 const { FiMail, FiLock, FiEye, FiEyeOff, FiStar, FiUsers, FiAward, FiGift, FiTrendingUp } = FiIcons;
 
@@ -94,7 +97,7 @@ const Login = ({ onLogin }) => {
           } else {
             // User needs to verify email (Code OTP or Link)
             setOtpSent(true);
-            alert('Please check your email for the verification code.');
+            showToast.success('Please check your email for the verification code.');
           }
 
         } else {
@@ -112,7 +115,7 @@ const Login = ({ onLogin }) => {
       }
     } catch (err) {
       console.error('Auth Error:', err);
-      setError(err.message);
+      setError(friendlyError(err, "We couldn't complete that request. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -248,8 +251,8 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 {error && (
-                  <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center">
-                    {error}
+                  <div className="mb-4">
+                    <InlineError message={error} />
                   </div>
                 )}
 

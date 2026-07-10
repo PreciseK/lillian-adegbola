@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 
 const { FiUser, FiMail, FiPhone, FiMapPin, FiEdit3, FiSave, FiX } = FiIcons;
 
@@ -81,10 +82,10 @@ const Profile = () => {
       if (error) throw error;
 
       setIsEditing(false);
-      alert('Profile updated successfully!');
+      showToast.success('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile');
+      showToast.error('Failed to update profile');
     }
   };
 

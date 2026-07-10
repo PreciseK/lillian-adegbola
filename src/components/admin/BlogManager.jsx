@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 import ImageUploader from './ImageUploader';
 import RichTextEditor from '../../common/RichTextEditor';
 
@@ -103,7 +104,7 @@ const BlogManager = () => {
       setShowModal(false);
     } catch (error) {
       console.error('Error saving post:', error);
-      alert('Error saving post');
+      showToast.error('Error saving post');
     }
   };
 
@@ -121,7 +122,7 @@ const BlogManager = () => {
       setPosts(posts.filter(post => post.id !== postId));
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('Error deleting post');
+      showToast.error('Error deleting post');
     }
   };
 
@@ -144,7 +145,7 @@ const BlogManager = () => {
       ));
     } catch (error) {
       console.error('Error updating post:', error);
-      alert('Error updating post status');
+      showToast.error('Error updating post status');
     }
   };
 
@@ -167,7 +168,7 @@ const BlogManager = () => {
       ));
     } catch (error) {
       console.error('Error updating post:', error);
-      alert('Error updating post status');
+      showToast.error('Error updating post status');
     }
   };
 

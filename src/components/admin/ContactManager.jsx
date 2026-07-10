@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 
 const { FiMail, FiUser, FiBriefcase, FiMessageCircle, FiCheck, FiTrash2, FiEye, FiReply, FiFilter, FiX } = FiIcons;
 
@@ -52,7 +53,7 @@ const ContactManager = () => {
       ));
     } catch (error) {
       console.error('Error updating message:', error);
-      alert('Error updating message status');
+      showToast.error('Error updating message status');
     }
   };
 
@@ -69,7 +70,7 @@ const ContactManager = () => {
       setMessages(messages.filter(message => message.id !== messageId));
     } catch (error) {
       console.error('Error deleting message:', error);
-      alert('Error deleting message');
+      showToast.error('Error deleting message');
     }
   };
 

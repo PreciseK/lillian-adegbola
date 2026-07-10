@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 
 const {
   FiUsers,
@@ -83,7 +84,7 @@ const NewsletterManager = () => {
       fetchSubscribers();
     } catch (error) {
       console.error('Error updating subscriber:', error);
-      alert('Error updating subscriber status');
+      showToast.error('Error updating subscriber status');
     }
   };
 
@@ -102,7 +103,7 @@ const NewsletterManager = () => {
       fetchSubscribers();
     } catch (error) {
       console.error('Error deleting subscriber:', error);
-      alert('Error deleting subscriber');
+      showToast.error('Error deleting subscriber');
     }
   };
 

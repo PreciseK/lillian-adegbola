@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import supabase from '../lib/supabase';
+import { friendlyError } from '../lib/friendlyError';
 
 export const useBooking = () => {
   const [loading, setLoading] = useState(false);
@@ -32,9 +33,10 @@ export const useBooking = () => {
       setLoading(false);
       return { success: true };
     } catch (err) {
-      setError(err.message);
+      const message = friendlyError(err, "We couldn't submit your booking. Please try again or contact us directly.");
+      setError(message);
       setLoading(false);
-      return { success: false, error: err.message };
+      return { success: false, error: message };
     }
   };
 

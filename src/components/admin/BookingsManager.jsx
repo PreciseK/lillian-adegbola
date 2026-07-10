@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 
 const {
   FiCalendar,
@@ -65,7 +66,7 @@ const BookingsManager = () => {
       ));
     } catch (error) {
       console.error('Error updating booking:', error);
-      alert('Error updating booking status');
+      showToast.error('Error updating booking status');
     }
   };
 
@@ -83,7 +84,7 @@ const BookingsManager = () => {
       setBookings(bookings.filter(booking => booking.id !== bookingId));
     } catch (error) {
       console.error('Error deleting booking:', error);
-      alert('Error deleting booking');
+      showToast.error('Error deleting booking');
     }
   };
 

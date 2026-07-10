@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import supabase from '../lib/supabase';
+import { friendlyError } from '../lib/friendlyError';
 
 export const useSettings = (settingKeys = []) => {
   const [settings, setSettings] = useState({});
@@ -38,7 +39,7 @@ export const useSettings = (settingKeys = []) => {
 
       setSettings(settingsObj);
     } catch (err) {
-      setError(err.message);
+      setError(friendlyError(err, "We couldn't load the latest settings."));
       console.error('Error fetching settings:', err);
     } finally {
       setLoading(false);
@@ -64,8 +65,9 @@ export const useSettings = (settingKeys = []) => {
 
       return { success: true };
     } catch (err) {
-      setError(err.message);
-      return { success: false, error: err.message };
+      const message = friendlyError(err, "We couldn't save that setting.");
+      setError(message);
+      return { success: false, error: message };
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import supabase from '../../lib/supabase';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import { friendlyError } from '../../lib/friendlyError';
 
 const { FiUpload, FiTrash2, FiLoader } = FiIcons;
 
@@ -46,7 +47,7 @@ const ImageUploader = ({ value, onChange, bucket = 'website-images', label = 'Im
       onChange(publicUrl);
     } catch (err) {
       console.error('Error uploading image:', err);
-      setError(err.message || 'Failed to upload image');
+      setError(friendlyError(err, 'Failed to upload image'));
     } finally {
       setUploading(false);
     }

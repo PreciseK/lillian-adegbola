@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
+import InlineError from '../common/InlineError';
 import BookingModal from './BookingModal';
 import { useContact } from '../hooks/useContact';
 import { useSettings } from '../hooks/useSettings';
+import { showToast } from '../lib/toast';
 
 const { FiMail, FiPhone, FiMapPin, FiSend, FiCalendar, FiLinkedin, FiInstagram, FiFacebook } = FiIcons;
 
@@ -34,7 +36,7 @@ const Contact = () => {
     const result = await submitContactForm(formData);
 
     if (result.success) {
-      alert('Message sent successfully! We\'ll get back to you soon.');
+      showToast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({
         name: '',
         email: '',
@@ -42,8 +44,6 @@ const Contact = () => {
         message: '',
         service: ''
       });
-    } else {
-      alert('Error sending message: ' + result.error);
     }
   };
 
@@ -237,11 +237,7 @@ const Contact = () => {
                   ></textarea>
                 </div>
 
-                {error && (
-                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
-                    {error}
-                  </div>
-                )}
+                <InlineError message={error} />
 
                 <motion.button
                   type="submit"
@@ -318,7 +314,7 @@ const Contact = () => {
                     if (settings?.download_leadership_guide_url) {
                       window.open(settings.download_leadership_guide_url, '_blank');
                     } else {
-                      alert('The leadership guide is currently being updated. Please check back soon!');
+                      showToast.info('The leadership guide is currently being updated. Please check back soon!');
                     }
                   }}
                   className="w-full border-2 border-navy-800 text-navy-800 py-3 sm:py-4 rounded-lg sm:rounded-xl font-montserrat font-bold hover:bg-navy-800 hover:text-white transition-all duration-300 text-sm sm:text-base"

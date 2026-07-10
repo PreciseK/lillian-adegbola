@@ -1,10 +1,11 @@
 import supabase from './supabase';
+import { friendlyError } from './friendlyError';
 
 class AdminAuth {
   async login(email, password) {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { success: false, error: error.message };
+      if (error) return { success: false, error: friendlyError(error, "We couldn't sign you in. Please try again.") };
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles_la2024')
@@ -19,7 +20,7 @@ class AdminAuth {
 
       return { success: true, user: { id: data.user.id, email: data.user.email, role: 'admin' } };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: friendlyError(err, "We couldn't sign you in. Please try again.") };
     }
   }
 

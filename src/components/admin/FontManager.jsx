@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { friendlyError } from '../../lib/friendlyError';
+import { showToast } from '../../lib/toast';
 
 const { FiType, FiSave, FiRotateCcw, FiEye, FiCheck, FiX } = FiIcons;
 
@@ -84,10 +86,10 @@ const FontManager = () => {
       
       setOriginalSettings({ ...fontSettings });
       setPreviewMode(false);
-      alert('Font settings updated successfully!');
+      showToast.success('Font settings updated successfully!');
     } catch (error) {
       console.error('Error updating font settings:', error);
-      alert('Error updating font settings: ' + error.message);
+      showToast.error(friendlyError(error, 'Error updating font settings. Please try again.'));
     } finally {
       setSaving(false);
     }

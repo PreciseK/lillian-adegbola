@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import supabase from '../../../lib/supabase';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import { showToast } from '../../../lib/toast';
 
 const {
   FiShoppingCart, FiDollarSign, FiPackage, FiTruck, FiSearch, FiFilter,
@@ -175,7 +176,7 @@ const OrderManagement = () => {
 
     } catch (error) {
       console.error('Error updating order status:', error);
-      alert('Failed to update order status');
+      showToast.error('Failed to update order status');
     }
   };
 

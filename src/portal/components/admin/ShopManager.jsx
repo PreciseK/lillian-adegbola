@@ -3,6 +3,7 @@ import supabase from '../../../lib/supabase';
 import ImageUploader from '../../../components/admin/ImageUploader';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import { showToast } from '../../../lib/toast';
 
 const { FiPlus, FiEdit2, FiTrash2, FiSave, FiX, FiSearch, FiImage, FiShoppingBag } = FiIcons;
 
@@ -65,7 +66,7 @@ const ShopManager = () => {
             setCurrentProduct(null);
         } catch (error) {
             console.error('Error saving product:', error);
-            alert('Error saving product');
+            showToast.error('Error saving product');
         }
     };
 

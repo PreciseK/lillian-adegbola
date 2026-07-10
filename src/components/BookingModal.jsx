@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
+import InlineError from '../common/InlineError';
 import { useBooking } from '../hooks/useBooking';
 
 const { FiX, FiCalendar, FiClock, FiUser, FiMail, FiPhone, FiBriefcase, FiMessageCircle, FiCheck } = FiIcons;
@@ -18,7 +19,7 @@ const BookingModal = ({ isOpen, onClose }) => {
     phone: '',
     company: '',
     message: '',
-    timezone: 'EST'
+    timezone: 'WAT'
   });
 
   const { submitBooking, loading, error } = useBooking();
@@ -175,8 +176,6 @@ const BookingModal = ({ isOpen, onClose }) => {
     const result = await submitBooking(bookingData);
     if (result.success) {
       setStep(4); // Show confirmation
-    } else {
-      alert('Error submitting booking: ' + result.error);
     }
   };
 
@@ -346,7 +345,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     Select Date & Time
                   </h3>
                   <p className="text-gray-600 font-montserrat">
-                    Choose your preferred 30-minute consultation slot (EST timezone)
+                    Choose your preferred 30-minute consultation slot (WAT timezone)
                   </p>
                 </div>
 
@@ -383,7 +382,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <h4 className="font-montserrat font-semibold text-navy-800 mb-3">
-                      Available Times (EST) - 30 Minutes Each
+                      Available Times (WAT) - 30 Minutes Each
                     </h4>
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                       {timeSlots.map((time) => (
@@ -524,17 +523,14 @@ const BookingModal = ({ isOpen, onClose }) => {
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
+                      required
                       rows={4}
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-transparent resize-none"
                       placeholder="Share your goals, challenges, or what you hope to achieve in our session..."
                     />
                   </div>
 
-                  {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                      {error}
-                    </div>
-                  )}
+                  <InlineError message={error} />
 
                   <div className="flex justify-between">
                     <motion.button
@@ -609,7 +605,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Time:</span>
                       <span className="text-navy-800 font-semibold">
-                        {selectedTime} EST
+                        {selectedTime} WAT
                       </span>
                     </div>
                   </div>

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { friendlyError } from '../../lib/friendlyError';
+import { showToast } from '../../lib/toast';
 import RichTextEditor from '../../common/RichTextEditor';
 
 const { FiSettings, FiSave, FiMail, FiPhone, FiLinkedin, FiInstagram, FiFacebook, FiGlobe, FiSearch, FiImage, FiFileText, FiEye, FiCode, FiShield, FiClock, FiDatabase, FiUpload, FiType, FiLock, FiTrendingUp, FiUsers, FiDollarSign, FiToggleLeft, FiToggleRight, FiKey, FiServer, FiMonitor, FiAlertTriangle, FiCheck } = FiIcons;
@@ -361,11 +363,11 @@ const SettingsManager = () => {
       }
 
       console.log('✅ Settings saved successfully!');
-      alert('Settings saved successfully!');
+      showToast.success('Settings saved successfully!');
       fetchSettings(); // Refresh settings
     } catch (error) {
       console.error('❌ Error saving settings:', error);
-      alert('Error saving settings: ' + error.message);
+      showToast.error(friendlyError(error, 'Error saving settings. Please try again.'));
     } finally {
       setSaving(false);
     }

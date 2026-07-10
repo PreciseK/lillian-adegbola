@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import supabase from './lib/supabase';
 import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
@@ -121,6 +122,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="bottom-right" toastOptions={{ duration: 4000 }} />
       <AppContent />
     </Router>
   );

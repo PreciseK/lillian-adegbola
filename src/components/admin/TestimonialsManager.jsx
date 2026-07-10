@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { showToast } from '../../lib/toast';
 import ImageUploader from './ImageUploader';
 
 const {
@@ -88,7 +89,7 @@ const TestimonialsManager = () => {
       setShowModal(false);
     } catch (error) {
       console.error('Error saving testimonial:', error);
-      alert('Error saving testimonial');
+      showToast.error('Error saving testimonial');
     }
   };
 
@@ -106,7 +107,7 @@ const TestimonialsManager = () => {
       setTestimonials(testimonials.filter(testimonial => testimonial.id !== testimonialId));
     } catch (error) {
       console.error('Error deleting testimonial:', error);
-      alert('Error deleting testimonial');
+      showToast.error('Error deleting testimonial');
     }
   };
 
@@ -129,7 +130,7 @@ const TestimonialsManager = () => {
       ));
     } catch (error) {
       console.error('Error updating testimonial:', error);
-      alert('Error updating testimonial status');
+      showToast.error('Error updating testimonial status');
     }
   };
 
@@ -152,7 +153,7 @@ const TestimonialsManager = () => {
       ));
     } catch (error) {
       console.error('Error updating testimonial:', error);
-      alert('Error updating testimonial status');
+      showToast.error('Error updating testimonial status');
     }
   };
 

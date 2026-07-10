@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { friendlyError } from '../../lib/friendlyError';
+import { showToast } from '../../lib/toast';
 
 const { FiSearch, FiSave, FiGlobe, FiTrendingUp, FiEye, FiCode, FiSettings, FiCheck, FiAlertTriangle, FiExternalLink } = FiIcons;
 
@@ -166,14 +168,14 @@ const SEOManager = () => {
         if (error) throw error;
       }
 
-      alert('SEO settings saved successfully!');
+      showToast.success('SEO settings saved successfully!');
 
       // Update document head
       updateDocumentHead();
 
     } catch (error) {
       console.error('Error saving SEO settings:', error);
-      alert('Error saving SEO settings: ' + error.message);
+      showToast.error(friendlyError(error, 'Error saving SEO settings. Please try again.'));
     } finally {
       setSaving(false);
     }

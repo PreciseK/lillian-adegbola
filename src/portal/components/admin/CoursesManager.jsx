@@ -3,6 +3,7 @@ import supabase from '../../../lib/supabase';
 import ImageUploader from '../../../components/admin/ImageUploader';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import { showToast } from '../../../lib/toast';
 
 const { FiPlus, FiEdit2, FiTrash2, FiSave, FiX, FiSearch, FiImage } = FiIcons;
 
@@ -69,7 +70,7 @@ const CoursesManager = () => {
             setCurrentCourse(null);
         } catch (error) {
             console.error('Error saving course:', error);
-            alert('Error saving course');
+            showToast.error('Error saving course');
         }
     };
 

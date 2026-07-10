@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import RichTextEditor from '../../../common/RichTextEditor';
+import { friendlyError } from '../../../lib/friendlyError';
+import { showToast } from '../../../lib/toast';
 
 const {
   FiTool, FiUsers, FiMail, FiFileText, FiDownload, FiUpload, FiRefreshCw,
@@ -467,7 +469,7 @@ const AdminTools = () => {
 
       if (error) throw error;
 
-      alert(`${tool.name} Success: ${data.message}`);
+      showToast.success(`${tool.name} Success: ${data.message}`);
       console.log('Tool Result:', data);
 
       if (data.data?.url) {
@@ -486,7 +488,7 @@ const AdminTools = () => {
 
     } catch (error) {
       console.error('Error running tool:', error);
-      alert(`${tool.name} Failed: ${error.message || 'Unknown error'}`);
+      showToast.error(friendlyError(error, `${tool.name} failed. Please try again.`));
     } finally {
       // Clear running state
       setRunningTools(prev => {
@@ -517,7 +519,7 @@ const AdminTools = () => {
         body: { action: config.action, payload }
       });
       if (error) throw error;
-      alert(`${tool.name} Success: ${data.message}`);
+      showToast.success(`${tool.name} Success: ${data.message}`);
       if (data.data?.url) {
         const link = document.createElement('a');
         link.href = data.data.url;
@@ -532,7 +534,7 @@ const AdminTools = () => {
       }
       setToolInputModal({ open: false, tool: null, inputs: {} });
     } catch (err) {
-      alert(`${tool.name} Failed: ${err.message}`);
+      showToast.error(friendlyError(err, `${tool.name} failed. Please try again.`));
     } finally {
       setSubmittingTool(false);
     }
@@ -553,11 +555,11 @@ const AdminTools = () => {
         }
       });
       if (error) throw error;
-      alert(`Bulk Email Sent: ${data.message}`);
+      showToast.success(`Bulk Email Sent: ${data.message}`);
       setComposeModal(false);
       setEmailDraft({ subject: '', body: '' });
     } catch (err) {
-      alert(`Failed to send: ${err.message}`);
+      showToast.error(friendlyError(err, 'Failed to send. Please try again.'));
     } finally {
       setSendingBulk(false);
     }

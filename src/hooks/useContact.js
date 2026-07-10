@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import supabase from '../lib/supabase';
+import { friendlyError } from '../lib/friendlyError';
 
 export const useContact = () => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ export const useContact = () => {
     setError(null);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('contact_messages_la2024')
         .insert([{
           name: formData.name,
@@ -19,17 +20,17 @@ export const useContact = () => {
           service: formData.service,
           message: formData.message,
           status: 'unread'
-        }])
-        .select();
+        }]);
 
       if (error) throw error;
 
       setLoading(false);
-      return { success: true, data: data[0] };
+      return { success: true };
     } catch (err) {
-      setError(err.message);
+      const message = friendlyError(err, "We couldn't send your message. Please try again.");
+      setError(message);
       setLoading(false);
-      return { success: false, error: err.message };
+      return { success: false, error: message };
     }
   };
 
@@ -38,23 +39,23 @@ export const useContact = () => {
     setError(null);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('newsletter_subscribers_la2024')
         .insert([{
           email: email,
           status: 'active',
           source: 'website'
-        }])
-        .select();
+        }]);
 
       if (error) throw error;
 
       setLoading(false);
-      return { success: true, data: data[0] };
+      return { success: true };
     } catch (err) {
-      setError(err.message);
+      const message = friendlyError(err, "We couldn't subscribe you. Please try again.");
+      setError(message);
       setLoading(false);
-      return { success: false, error: err.message };
+      return { success: false, error: message };
     }
   };
 

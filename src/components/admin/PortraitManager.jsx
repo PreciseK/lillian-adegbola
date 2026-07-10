@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
+import { friendlyError } from '../../lib/friendlyError';
+import { showToast } from '../../lib/toast';
 import ImageUploader from './ImageUploader';
 
 const { FiImage, FiUpload, FiSave, FiEye, FiTrash2, FiEdit3, FiCheck, FiX } = FiIcons;
@@ -59,10 +61,10 @@ const PortraitManager = () => {
       setCurrentPortrait(newPortraitUrl.trim());
       setNewPortraitUrl('');
       setPreviewMode(false);
-      alert('Portrait updated successfully!');
+      showToast.success('Portrait updated successfully!');
     } catch (error) {
       console.error('Error updating portrait:', error);
-      alert('Error updating portrait: ' + error.message);
+      showToast.error(friendlyError(error, 'Error updating portrait. Please try again.'));
     } finally {
       setSaving(false);
     }

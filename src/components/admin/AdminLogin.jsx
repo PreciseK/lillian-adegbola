@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
+import InlineError from '../../common/InlineError';
 import adminAuth from '../../lib/adminAuth';
 
 const { FiUser, FiLock, FiEye, FiEyeOff } = FiIcons;
@@ -61,9 +62,9 @@ const AdminLogin = ({ onLogin }) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6"
+            className="mb-6"
           >
-            {error}
+            <InlineError message={error} />
           </motion.div>
         )}
 
