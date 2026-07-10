@@ -4,14 +4,16 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import InlineError from '../common/InlineError';
 import { useBooking } from '../hooks/useBooking';
+import { useSettings } from '../hooks/useSettings';
 
-const { FiX, FiCalendar, FiClock, FiUser, FiMail, FiPhone, FiBriefcase, FiMessageCircle, FiCheck } = FiIcons;
+const { FiX, FiCalendar, FiClock, FiUser, FiMail, FiPhone, FiBriefcase, FiMessageCircle, FiCheck, FiVideo, FiMapPin } = FiIcons;
 
 const BookingModal = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [meetingType, setMeetingType] = useState('online');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -23,6 +25,7 @@ const BookingModal = ({ isOpen, onClose }) => {
   });
 
   const { submitBooking, loading, error } = useBooking();
+  const { settings } = useSettings(['contact_address']);
 
   const services = [
     {
@@ -170,6 +173,8 @@ const BookingModal = ({ isOpen, onClose }) => {
       service: selectedService,
       date: selectedDate,
       time: selectedTime,
+      meetingType,
+      contactAddress: settings.contact_address,
       ...formData
     };
 
@@ -191,6 +196,7 @@ const BookingModal = ({ isOpen, onClose }) => {
     setSelectedService('');
     setSelectedDate('');
     setSelectedTime('');
+    setMeetingType('online');
     setFormData({
       firstName: '',
       lastName: '',
@@ -198,7 +204,7 @@ const BookingModal = ({ isOpen, onClose }) => {
       phone: '',
       company: '',
       message: '',
-      timezone: 'EST'
+      timezone: 'WAT'
     });
   };
 
@@ -233,7 +239,7 @@ const BookingModal = ({ isOpen, onClose }) => {
             >
               <SafeIcon icon={FiX} className="text-xl" />
             </button>
-            
+
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gold-gradient rounded-full flex items-center justify-center">
                 <SafeIcon icon={FiCalendar} className="text-navy-900 text-xl" />
@@ -249,19 +255,17 @@ const BookingModal = ({ isOpen, onClose }) => {
               {[1, 2, 3].map((stepNumber) => (
                 <div key={stepNumber} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                      step >= stepNumber
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${step >= stepNumber
                         ? 'bg-gold-400 text-navy-900'
                         : 'bg-white/20 text-white'
-                    }`}
+                      }`}
                   >
                     {step > stepNumber ? <SafeIcon icon={FiCheck} /> : stepNumber}
                   </div>
                   {stepNumber < 3 && (
                     <div
-                      className={`w-8 h-0.5 mx-2 transition-colors ${
-                        step > stepNumber ? 'bg-gold-400' : 'bg-white/20'
-                      }`}
+                      className={`w-8 h-0.5 mx-2 transition-colors ${step > stepNumber ? 'bg-gold-400' : 'bg-white/20'
+                        }`}
                     />
                   )}
                 </div>
@@ -293,11 +297,10 @@ const BookingModal = ({ isOpen, onClose }) => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setSelectedService(service.id)}
-                      className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                        selectedService === service.id
+                      className={`p-4 rounded-2xl border-2 text-left transition-all ${selectedService === service.id
                           ? 'border-gold-400 bg-gold-400/10'
                           : 'border-gray-200 hover:border-gold-400/50'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-playfair font-bold text-navy-800 text-sm">
@@ -307,11 +310,11 @@ const BookingModal = ({ isOpen, onClose }) => {
                           {service.duration}
                         </span>
                       </div>
-                      
+
                       <p className="text-gray-600 font-montserrat text-xs mb-2">
                         {service.description}
                       </p>
-                      
+
                       <p className="text-gold-600 font-montserrat font-semibold text-xs">
                         {service.price}
                       </p>
@@ -345,8 +348,61 @@ const BookingModal = ({ isOpen, onClose }) => {
                     Select Date & Time
                   </h3>
                   <p className="text-gray-600 font-montserrat">
-                    Choose your preferred 30-minute consultation slot (WAT timezone)
+                    Choose your preferred 30-minute consultation slot (WAT / GMT+1)
                   </p>
+                </div>
+
+                {/* Meeting Type */}
+                <div>
+                  <h4 className="font-montserrat font-semibold text-navy-800 mb-3">
+                    Meeting Type
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setMeetingType('online')}
+                      className={`p-4 rounded-xl text-left border-2 transition-all flex items-start space-x-3 ${meetingType === 'online'
+                          ? 'border-gold-400 bg-gold-400/10'
+                          : 'border-gray-200 hover:border-gold-400/50'
+                        }`}
+                    >
+                      <SafeIcon icon={FiVideo} className="text-navy-800 text-lg mt-0.5" />
+                      <div>
+                        <div className="font-montserrat font-semibold text-navy-800 text-sm">Online</div>
+                        <div className="text-xs text-gray-500 font-montserrat">Video call link sent by email</div>
+                      </div>
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setMeetingType('offline')}
+                      className={`p-4 rounded-xl text-left border-2 transition-all flex items-start space-x-3 ${meetingType === 'offline'
+                          ? 'border-gold-400 bg-gold-400/10'
+                          : 'border-gray-200 hover:border-gold-400/50'
+                        }`}
+                    >
+                      <SafeIcon icon={FiMapPin} className="text-navy-800 text-lg mt-0.5" />
+                      <div>
+                        <div className="font-montserrat font-semibold text-navy-800 text-sm">In-Person</div>
+                        <div className="text-xs text-gray-500 font-montserrat">Meet at our office</div>
+                      </div>
+                    </motion.button>
+                  </div>
+
+                  {meetingType === 'offline' && settings.contact_address && (
+                    <div className="mt-3 bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-start space-x-3">
+                      <SafeIcon icon={FiMapPin} className="text-gold-600 text-lg mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-xs font-montserrat font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                          Meeting Address
+                        </div>
+                        <p className="text-sm text-navy-800 font-montserrat">{settings.contact_address}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Date Selection */}
@@ -361,11 +417,10 @@ const BookingModal = ({ isOpen, onClose }) => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setSelectedDate(date.value)}
-                        className={`p-3 rounded-xl text-center transition-all ${
-                          selectedDate === date.value
+                        className={`p-3 rounded-xl text-center transition-all ${selectedDate === date.value
                             ? 'bg-gold-400 text-navy-900'
                             : 'bg-gray-100 text-navy-800 hover:bg-gold-100'
-                        }`}
+                          }`}
                       >
                         <div className="font-montserrat font-semibold text-sm">
                           {date.label}
@@ -382,7 +437,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <h4 className="font-montserrat font-semibold text-navy-800 mb-3">
-                      Available Times (WAT) - 30 Minutes Each
+                      Available Times (WAT / GMT+1) - 30 Minutes Each
                     </h4>
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                       {timeSlots.map((time) => (
@@ -391,11 +446,10 @@ const BookingModal = ({ isOpen, onClose }) => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setSelectedTime(time)}
-                          className={`p-3 rounded-xl text-center transition-all ${
-                            selectedTime === time
+                          className={`p-3 rounded-xl text-center transition-all ${selectedTime === time
                               ? 'bg-gold-400 text-navy-900'
                               : 'bg-gray-100 text-navy-800 hover:bg-gold-100'
-                          }`}
+                            }`}
                         >
                           <div className="font-montserrat font-semibold text-sm">
                             {time}
@@ -517,7 +571,7 @@ const BookingModal = ({ isOpen, onClose }) => {
 
                   <div>
                     <label className="block text-navy-800 font-montserrat font-medium mb-2">
-                      What would you like to discuss in your 30-minute consultation?
+                      What would you like to discuss in your 30-minute consultation? *
                     </label>
                     <textarea
                       name="message"
@@ -605,7 +659,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Time:</span>
                       <span className="text-navy-800 font-semibold">
-                        {selectedTime} WAT
+                        {selectedTime} WAT (GMT+1)
                       </span>
                     </div>
                   </div>

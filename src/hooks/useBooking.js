@@ -23,7 +23,8 @@ export const useBooking = () => {
         phone: bookingData.phone,
         company: bookingData.company,
         message: bookingData.message,
-        timezone: bookingData.timezone || 'EST',
+        timezone: bookingData.timezone || 'WAT',
+        meeting_type: bookingData.meetingType || 'online',
         status: 'pending'
       };
 
@@ -33,7 +34,7 @@ export const useBooking = () => {
 
       if (error) throw error;
 
-      sendBookingEmail(record, bookingReceivedEmail);
+      sendBookingEmail({ ...record, meeting_address: bookingData.contactAddress }, bookingReceivedEmail);
 
       setLoading(false);
       return { success: true };
