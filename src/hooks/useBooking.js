@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import supabase from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
+import { sendBookingEmail, bookingReceivedEmail } from '../lib/bookingEmailTemplates';
 
 export const useBooking = () => {
   const [loading, setLoading] = useState(false);
@@ -11,24 +12,28 @@ export const useBooking = () => {
     setError(null);
 
     try {
+      const record = {
+        service_type: bookingData.service,
+        service_name: getServiceName(bookingData.service),
+        appointment_date: bookingData.date,
+        appointment_time: bookingData.time,
+        first_name: bookingData.firstName,
+        last_name: bookingData.lastName,
+        email: bookingData.email,
+        phone: bookingData.phone,
+        company: bookingData.company,
+        message: bookingData.message,
+        timezone: bookingData.timezone || 'EST',
+        status: 'pending'
+      };
+
       const { error } = await supabase
         .from('bookings_la2024')
-        .insert([{
-          service_type: bookingData.service,
-          service_name: getServiceName(bookingData.service),
-          appointment_date: bookingData.date,
-          appointment_time: bookingData.time,
-          first_name: bookingData.firstName,
-          last_name: bookingData.lastName,
-          email: bookingData.email,
-          phone: bookingData.phone,
-          company: bookingData.company,
-          message: bookingData.message,
-          timezone: bookingData.timezone || 'EST',
-          status: 'pending'
-        }]);
+        .insert([record]);
 
       if (error) throw error;
+
+      sendBookingEmail(record, bookingReceivedEmail);
 
       setLoading(false);
       return { success: true };

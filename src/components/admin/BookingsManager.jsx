@@ -4,6 +4,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../../common/SafeIcon';
 import supabase from '../../lib/supabase';
 import { showToast } from '../../lib/toast';
+import { sendBookingEmail, bookingConfirmedEmail } from '../../lib/bookingEmailTemplates';
 
 const {
   FiCalendar,
@@ -58,12 +59,19 @@ const BookingsManager = () => {
         .eq('id', bookingId);
 
       if (error) throw error;
-      
-      setBookings(bookings.map(booking => 
-        booking.id === bookingId 
+
+      setBookings(bookings.map(booking =>
+        booking.id === bookingId
           ? { ...booking, status: newStatus }
           : booking
       ));
+
+      if (newStatus === 'confirmed') {
+        const booking = bookings.find(b => b.id === bookingId);
+        if (booking) {
+          sendBookingEmail(booking, bookingConfirmedEmail);
+        }
+      }
     } catch (error) {
       console.error('Error updating booking:', error);
       showToast.error('Error updating booking status');
