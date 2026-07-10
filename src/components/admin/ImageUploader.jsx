@@ -6,7 +6,7 @@ import { friendlyError } from '../../lib/friendlyError';
 
 const { FiUpload, FiTrash2, FiLoader } = FiIcons;
 
-const ImageUploader = ({ value, onChange, bucket = 'website-images', label = 'Image' }) => {
+const ImageUploader = ({ value, onChange, bucket = 'website-images', label = 'Image', helpText }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -63,7 +63,8 @@ const ImageUploader = ({ value, onChange, bucket = 'website-images', label = 'Im
       <label className="block text-sm font-medium text-gray-700">
         {label}
       </label>
-      
+      {helpText && <p className="text-xs text-gray-500">{helpText}</p>}
+
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
         {/* Image Preview */}
         {value ? (

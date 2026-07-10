@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import TransformationModal from './TransformationModal';
 import BookingModal from './BookingModal';
 import supabase from '../lib/supabase';
 
-const { FiStar, FiMessageCircle } = FiIcons;
+const { FiStar, FiMessageCircle, FiChevronLeft, FiChevronRight } = FiIcons;
+
+const AUTOPLAY_INTERVAL_MS = 7000;
 
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTransformationModal, setShowTransformationModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
   const [siteSettings, setSiteSettings] = useState({
     stat_leaders_transformed: '500+',
     stat_success_rate: '95%',
@@ -127,6 +132,27 @@ const Testimonials = () => {
     setShowBookingModal(true);
   };
 
+  const goToSlide = useCallback((index) => {
+    setDirection(index > activeIndex ? 1 : -1);
+    setActiveIndex(index);
+  }, [activeIndex]);
+
+  const goToPrev = () => {
+    setDirection(-1);
+    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  const goToNext = useCallback(() => {
+    setDirection(1);
+    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  }, [testimonials.length]);
+
+  useEffect(() => {
+    if (isPaused || testimonials.length <= 1) return undefined;
+    const timer = setInterval(goToNext, AUTOPLAY_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [isPaused, goToNext, testimonials.length]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -177,68 +203,114 @@ const Testimonials = () => {
             </p>
           </motion.div>
 
-          {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                viewport={{ once: true }}
-                className="bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gold-400/20 shadow-xl hover:shadow-2xl transition-all duration-300"
-              >
-                {/* Quote Icon */}
-                <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gold-gradient rounded-full flex items-center justify-center mb-4 sm:mb-6">
-                  <SafeIcon icon={FiMessageCircle} className="text-navy-900 text-lg sm:text-xl" />
-                </div>
+          {/* Testimonials Carousel */}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <div className="overflow-hidden rounded-2xl sm:rounded-3xl">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeIndex}
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction * 60 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction * -60 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-gold-400/20 shadow-xl grid grid-cols-1 md:grid-cols-5"
+                >
+                  {/* Text side */}
+                  <div className="md:col-span-3 p-6 sm:p-10 lg:p-12 flex flex-col justify-center order-2 md:order-1">
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gold-gradient rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                      <SafeIcon icon={FiMessageCircle} className="text-navy-900 text-lg sm:text-xl" />
+                    </div>
 
-                {/* Rating */}
-                <div className="flex items-center mb-3 sm:mb-4">
-                  {[...Array(testimonial.rating || 5)].map((_, i) => (
-                    <SafeIcon key={i} icon={FiStar} className="text-gold-400 text-base sm:text-lg mr-1" />
-                  ))}
-                </div>
+                    <div className="flex items-center mb-3 sm:mb-4">
+                      {[...Array(testimonials[activeIndex].rating || 5)].map((_, i) => (
+                        <SafeIcon key={i} icon={FiStar} className="text-gold-400 text-base sm:text-lg mr-1" />
+                      ))}
+                    </div>
 
-                {/* Content */}
-                <p className="text-white font-montserrat text-base sm:text-lg leading-relaxed mb-4 sm:mb-6">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center">
-                  <div className="w-12 sm:w-16 h-12 sm:h-16 bg-gold-gradient rounded-full flex items-center justify-center mr-3 sm:mr-4 overflow-hidden">
-                    {testimonial.image_url ? (
-                      <img
-                        src={testimonial.image_url}
-                        alt={testimonial.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // Fallback to initials if image fails to load
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <span
-                      className="text-navy-900 font-bold text-sm sm:text-lg"
-                      style={{ display: testimonial.image_url ? 'none' : 'flex' }}
-                    >
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="text-white font-playfair font-bold text-base sm:text-lg">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-gold-400 font-montserrat text-sm sm:text-base">
-                      {testimonial.title}{testimonial.company ? `, ${testimonial.company}` : ''}
+                    <p className="text-white font-montserrat text-base sm:text-lg lg:text-xl leading-relaxed mb-6 sm:mb-8">
+                      "{testimonials[activeIndex].content}"
                     </p>
+
+                    <div>
+                      <h4 className="text-white font-playfair font-bold text-lg sm:text-xl">
+                        {testimonials[activeIndex].name}
+                      </h4>
+                      <p className="text-gold-400 font-montserrat text-sm sm:text-base">
+                        {testimonials[activeIndex].title}{testimonials[activeIndex].company ? `, ${testimonials[activeIndex].company}` : ''}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Picture side */}
+                  <div className="md:col-span-2 relative order-1 md:order-2 min-h-[220px] sm:min-h-[280px] md:min-h-0">
+                    <div className="absolute inset-0 md:rounded-r-2xl md:rounded-tl-none rounded-t-2xl overflow-hidden bg-gold-gradient">
+                      {testimonials[activeIndex].image_url ? (
+                        <img
+                          src={testimonials[activeIndex].image_url}
+                          alt={testimonials[activeIndex].name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <span
+                        className="w-full h-full items-center justify-center text-navy-900 font-playfair font-bold text-4xl sm:text-6xl"
+                        style={{ display: testimonials[activeIndex].image_url ? 'none' : 'flex' }}
+                      >
+                        {testimonials[activeIndex].name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-navy-900/40 via-transparent to-transparent pointer-events-none" />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Nav arrows */}
+            {testimonials.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={goToPrev}
+                  aria-label="Previous testimonial"
+                  className="absolute left-2 sm:-left-5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-navy-900/80 hover:bg-navy-900 border border-gold-400/30 text-gold-400 flex items-center justify-center shadow-lg transition-colors z-10"
+                >
+                  <SafeIcon icon={FiChevronLeft} className="text-lg sm:text-xl" />
+                </button>
+                <button
+                  type="button"
+                  onClick={goToNext}
+                  aria-label="Next testimonial"
+                  className="absolute right-2 sm:-right-5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-navy-900/80 hover:bg-navy-900 border border-gold-400/30 text-gold-400 flex items-center justify-center shadow-lg transition-colors z-10"
+                >
+                  <SafeIcon icon={FiChevronRight} className="text-lg sm:text-xl" />
+                </button>
+              </>
+            )}
+
+            {/* Dot indicators */}
+            {testimonials.length > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6 sm:mt-8">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => goToSlide(index)}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === activeIndex ? 'w-8 bg-gold-400' : 'w-2 bg-white/30 hover:bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Stats Section */}

@@ -485,6 +485,7 @@ const TestimonialsManager = () => {
 
               <ImageUploader
                 label="Avatar Image"
+                helpText="Don't paste a Google Drive share link — it won't display on the site. Upload the photo directly, or paste a direct image URL (one that ends in .jpg/.png and opens the image itself in a browser)."
                 value={formData.image_url}
                 onChange={(url) => setFormData({ ...formData, image_url: url })}
               />
